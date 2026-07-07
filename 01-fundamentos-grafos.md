@@ -1,9 +1,5 @@
-# Fundamentos de grafos — Guía a detalle
+# Fundamentos de grafos 
 
-> Este documento cubre **solo los fundamentos** de teoría de grafos (nada de
-> algoritmos como Floyd-Warshall, Dijkstra, Prim, etc. — eso queda para
-> cuando lo pidas). Cada tema trae su explicación completa, el problema
-> resuelto y un gráfico real en Mermaid.
 
 ---
 
@@ -120,18 +116,7 @@ graph TD
 | b | 0 | 1 | 0 | 1 | 1 |
 | c | 0 | 0 | 1 | 1 | 1 |
 
-**Cómo leerlas:** en la adyacencia, la diagonal de $a$ vale $2$ porque el
-bucle cuenta doble. Fuera de la diagonal, $a$-$b=1$ (una arista directa),
-$b$-$c=2$ (dos aristas paralelas entre $b$ y $c$). En la incidencia, la
-columna $e_1$ (el bucle) tiene un **2** únicamente en la fila de $a$ —
-así es como se representa un bucle: no toca a ningún otro vértice, pero
-"pesa doble" en el suyo.
 
-> **Nota:** en el material fuente, la tabla de incidencia venía dibujada
-> de forma inconsistente con la de adyacencia (mostraba el bucle como una
-> arista normal $a$–$b$). Aquí ya quedó corregida para que ambas coincidan:
-> $e_1$ es el bucle, $e_2$ es $a$–$b$, $e_3$ es $a$–$c$, y $e_4,e_5$ son las
-> dos aristas paralelas $b$–$c$.
 
 ---
 
@@ -339,8 +324,8 @@ simples posibles, no solo el primero que encuentra.
 **Trazado:** buscando todos los caminos de $A$ a $C$ en el grafo de
 arriba:
 
-- Rama 1: $A \to B \to C$ ✅ (se imprime, porque llegó al destino)
-- Vuelve atrás, prueba la otra rama desde $A$: $A \to D \to C$ ✅ (también
+- Rama 1: $A \to B \to C$  (se imprime, porque llegó al destino)
+- Vuelve atrás, prueba la otra rama desde $A$: $A \to D \to C$  (también
   llega)
 
 **Resultado:** existen exactamente **2 caminos simples** entre $A$ y $C$:
