@@ -25,7 +25,5 @@ con explicaciones adicionales donde el material original era incompleto.
 ## Convenciones usadas en estos apuntes
 
 - Los bloques de código marcados `pseudocódigo` son algoritmos en pseudocódigo, no un lenguaje real.
-- Las fórmulas matemáticas usan notación LaTeX entre `$...$` (en línea) y `$$...$$` (en bloque),
-  compatible con la vista de Markdown de GitHub.
-- Cada archivo incluye, al final, una sección **"Para reforzar"** con aclaraciones o ejemplos
-  que no estaban explícitos en el material original del curso.
+- Para el examen, se desarrollan algoritmos, los códigos hechos en c++, solo son usados para ejemplificar mejor como funciona cada algoritmo desarrollado en clase.
+- Un algoritmo solo se enfoca en la parte lógica a diferencia del código tradicional, por ende, no es necesario usar toda la sintaxis del lenguaje en sí, solo la lógica que constituye a este.
