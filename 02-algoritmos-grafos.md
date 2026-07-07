@@ -2,8 +2,8 @@
 
 ## 2.1 Floyd-Warshall — ruta mínima entre **todos** los pares de nodos
 
-**Idea central:** para cada posible nodo intermediario $k$ (de 1 a $n$), se
-pregunta: *¿es más corto ir de $i$ a $j$ pasando por $k$, que la mejor ruta
+**Idea central:** para cada posible nodo intermediario k (de 1 a n), se
+pregunta: *¿es más corto ir de i a j pasando por k, que la mejor ruta
 conocida hasta ahora?*
 
 $$d[i][j] = \min\big(d[i][j],\ d[i][k] + d[k][j]\big)$$
@@ -28,11 +28,7 @@ for (k = 0; k < n; k++)
   camino. Ejemplo: si $P[D][B] = C$ y $P[D][C] = D$, la ruta de $D$ a $B$ es
   $D \to C \to B$.
 
-**Para reforzar:** Floyd-Warshall funciona incluso con **pesos negativos**
-(siempre que no haya ciclos de peso negativo), a diferencia de Dijkstra. Es la
-elección natural cuando se necesitan las distancias entre **todos** los pares
-de nodos a la vez; si solo se necesita un origen fijo, Dijkstra es más
-eficiente ($O(n^2)$ o $O((n+|E|)\log n)$ con cola de prioridad).
+
 
 ## 2.2 Cerradura transitiva (Warshall booleano)
 
@@ -161,9 +157,4 @@ hay empates de peso.
    a todos los demás — el candidato ideal para, por ejemplo, un punto de
    abastecimiento o distribución.
 
-**Para reforzar:** esta métrica se llama *closeness centrality* en la
-literatura de análisis de redes. Un valor alto significa que, en promedio, la
-información (o mercancía) tarda menos en llegar desde ese nodo a cualquier
-otro. Es distinta de la *centralidad de intermediación* (betweenness
-centrality), que mide cuántas rutas más cortas **pasan por** un nodo, no qué
-tan cerca está de los demás.
+
