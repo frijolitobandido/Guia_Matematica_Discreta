@@ -366,14 +366,14 @@ graph TD
 ### Demostración
 
 1. Antes de unir: $\delta(u)$ y $\delta(v)$ son pares (por hipótesis).
-2. Al agregar la arista $u$–$v$, **ambos** grados aumentan en 1:
+2. Al agregar la arista $u$–v, **ambos** grados aumentan en 1:
    $$\delta(u) = \text{par}+1 = \text{impar}, \qquad \delta(v) = \text{par}+1 = \text{impar}$$
 3. El resto de los vértices no se ven afectados — siguen con grado par.
 4. Resultado: el grafo unido tiene **exactamente 2 vértices de grado
    impar** ($u$ y $v$, resaltados en rojo).
 5. Como la condición necesaria para un circuito de Euler es que **todos**
    los vértices tengan grado par, el grafo resultante no puede tener
-   circuito de Euler. $\blacksquare$
+   circuito de Euler. 
 
 **Nota:** con exactamente 2 vértices de grado impar sí existe un **camino**
 de Euler entre $u$ y $v$ (uno abierto, que no regresa al inicio) — pero
