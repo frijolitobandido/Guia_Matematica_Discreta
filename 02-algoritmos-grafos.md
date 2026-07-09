@@ -10,8 +10,8 @@
 
 ### Teoría
 
-Para cada posible nodo intermediario $k$ (de 1 a $n$), se pregunta: *¿es
-más corto ir de $i$ a $j$ pasando por $k$, que la mejor ruta conocida
+Para cada posible nodo intermediario k (de 1 a n), se pregunta: *¿es
+más corto ir de i a j pasando por k, que la mejor ruta conocida
 hasta ahora?*
 
 $$d[i][j] = \min\big(d[i][j],\ d[i][k] + d[k][j]\big)$$
@@ -153,13 +153,7 @@ predecesores **hacia atrás** desde $j$ hasta llegar a $i$:
 - **$C \to D$** (distancia 14): $P[C][D]=B \to P[C][B]=C$ → ruta:
   $C \to B \to A \to D$.
 
-### Para reforzar
-
-Floyd-Warshall funciona incluso con **pesos negativos** (siempre que no
-haya ciclos de peso negativo), algo que Dijkstra no soporta. Es la
-elección natural cuando se necesitan las distancias entre **todos** los
-pares de nodos a la vez; si solo importa un origen fijo, Dijkstra es más
-eficiente.
+Como el grafo tiene 4 vértices, se hacen exactamente 4 iteraciones (k=1, k=2, k=3, k=4). En cada una se revisan los 4×4 = 16 pares, dando 64 iteraciones totales. Solo se registran en la matriz los pares donde el valor mejora; los demás conservan su valor anterior.
 
 ---
 
@@ -359,13 +353,7 @@ Se necesitan **3 colores** como mínimo: los nodos $2,3,4$ forman un
 triángulo (todos conectados entre sí), así que esos tres nunca pueden
 compartir color — eso ya obliga a un mínimo de 3.
 
-### Para reforzar
 
-El resultado de este algoritmo voraz depende del **orden** en que se
-recorren los vértices; no siempre da el número cromático óptimo. La
-variante **Welsh-Powell** ordena los vértices de mayor a menor grado
-antes de colorear, y suele dar mejores resultados. Encontrar el número
-cromático exacto en general es **NP-difícil**.
 
 ---
 
@@ -427,13 +415,7 @@ de predecesores del método (guardando desde qué nodo se relajó cada
 vecino), la ruta a cualquier destino se reconstruye igual que en
 Floyd-Warshall.
 
-### Para reforzar
 
-**Restricción importante:** Dijkstra **solo funciona correctamente con
-pesos no negativos**. El algoritmo asume que, una vez marcado un nodo
-como visitado, su distancia ya es mínima — y eso deja de ser cierto si
-una arista negativa pudiera "acortar" el camino después. Para pesos
-negativos (sin ciclos negativos) se usa **Bellman-Ford**.
 
 ---
 
@@ -499,8 +481,8 @@ Algoritmo_Prim_Matriz(MatrizCostos, TotalNodos, NodoInicial)
 | 4 | **D** (costo 5) | 0 | 2 | 1 | 5 | **2** (D–E=2 < 6) |
 | 5 | **E** (costo 2) | 0 | 2 | 1 | 5 | 2 |
 
-**Aristas elegidas (por el arreglo `padre[]`):** $A{-}C(1),\ C{-}B(2),\
-B{-}D(5),\ D{-}E(2)$. **Costo total $=1+2+5+2=10$.**
+**Aristas elegidas (por el arreglo `padre[]`):** A-C(1),\ C-B(2),\
+B-D(5),\ D-E(2). **Costo total $=1+2+5+2=10$.**
 
 ### 5.2 Kruskal — código
 
@@ -521,11 +503,11 @@ cada decisión:
 
 | Arista | Peso | Grupo(u) | Grupo(v) | ¿Se agrega? | Conjuntos tras este paso |
 |---|---|---|---|---|---|
-| A–C | 1 | {A} | {C} | ✅ Sí | {A,C}, {B}, {D}, {E} |
-| B–C | 2 | {B} | {A,C} | ✅ Sí | {A,B,C}, {D}, {E} |
-| D–E | 2 | {D} | {E} | ✅ Sí | {A,B,C}, {D,E} |
-| A–B | 4 | {A,B,C} | {A,B,C} | ❌ No (mismo grupo → ciclo) | {A,B,C}, {D,E} |
-| B–D | 5 | {A,B,C} | {D,E} | ✅ Sí | {A,B,C,D,E} — ¡ya está todo unido! |
+| A–C | 1 | {A} | {C} |  Sí | {A,C}, {B}, {D}, {E} |
+| B–C | 2 | {B} | {A,C} |  Sí | {A,B,C}, {D}, {E} |
+| D–E | 2 | {D} | {E} |  Sí | {A,B,C}, {D,E} |
+| A–B | 4 | {A,B,C} | {A,B,C} |  No (mismo grupo → ciclo) | {A,B,C}, {D,E} |
+| B–D | 5 | {A,B,C} | {D,E} |  Sí | {A,B,C,D,E} — ¡ya está todo unido! |
 
 Con 4 aristas agregadas para 5 nodos, el árbol queda completo. **Costo
 total $=1+2+2+5=10$** — idéntico al de Prim, aunque el orden de
@@ -551,7 +533,7 @@ graph TD
 *(en rojo, el árbol de expansión mínima final — el mismo resultado sea
 cual sea el algoritmo usado)*
 
-### Para reforzar
+
 
 Prim mira siempre "hacia afuera" desde el árbol que ya construyó.
 Kruskal mira el grafo **completo** de una vez, sin importar si las
@@ -575,7 +557,7 @@ mínimo, aunque el árbol resultante puede diferir si hay empates de peso
 
 | Nodo | Distancias hacia los demás | Suma | Centralidad $=\dfrac{3}{\text{suma}}$ |
 |---|---|---|---|
-| **A** | $5,\ 2,\ 4$ | $11$ | $3/11=\mathbf{0.273}$ ✅ |
+| **A** | $5,\ 2,\ 4$ | $11$ | $3/11=\mathbf{0.273}$  |
 | B | $7,\ 9,\ 11$ | $27$ | $3/27=0.111$ |
 | C | $10,\ 3,\ 14$ | $27$ | $3/27=0.111$ |
 | D | $11,\ 4,\ 1$ | $16$ | $3/16=0.1875$ |
@@ -597,10 +579,107 @@ a cualquier otro nodo de la red. Tiene sentido mirando el grafo: $A$
 tiene salida directa hacia los tres nodos restantes, mientras que $B$,
 $C$ y $D$ dependen de rutas más largas para alcanzarse entre sí.
 
-### Para reforzar
-
-Esta métrica se llama *closeness centrality*. Es distinta de la
-**centralidad de intermediación** (*betweenness centrality*), que mide
-cuántas rutas más cortas **pasan por** un nodo, no qué tan cerca está de
-los demás. Un nodo puede tener alta cercanía sin ser un "puente"
-importante, y viceversa.
+### Ejemplo aplicado — punto de abastecimiento en Lima
+ 
+Una transnacional de productos de belleza tiene
+7 sedes en Lima. ¿Cuál sede debería ser el punto de abastecimiento
+principal, y por qué?
+ 
+```mermaid
+graph LR
+    SI((San Isidro)) ---|5| SB((San Borja))
+    SI ---|7| SU((Surco))
+    SI ---|4| JM((Jesus Maria))
+    SI ---|6| LI((Lince))
+    SI ---|8| MI((Miraflores))
+    SB ---|8| SU
+    SB ---|12| LI
+    SB ---|9| LM((La Molina))
+    SU ---|10| MI
+    SU ---|11| LM
+    JM ---|7| LI
+ 
+    style SI fill:#6fcf7f,color:#fff,stroke:#2f9e46,stroke-width:3px
+```
+ 
+*(pesos = costo de distribución en soles)*
+ 
+**Código en C++:**
+ 
+```cpp
+#include <iostream>
+using namespace std;
+const int INF = 99999; // Representa que no hay conexión directa
+ 
+int main() {
+    int n = 7; // Total de sedes en Lima
+    string sedes[] = {"San Isidro", "San Borja", "Surco", "Jesus Maria",
+                       "Lince", "Miraflores", "La Molina"};
+    int D[7][7] = {
+        {0, 5, 7, 4, 6, 8, INF},    // San Isidro
+        {5, 0, 8, INF, 12, INF, 9}, // San Borja
+        {7, 8, 0, INF, INF, 10, 11},// Surco
+        {4, INF, INF, 0, 7, INF, INF}, // Jesus Maria
+        {6, 12, INF, 7, 0, INF, INF},  // Lince
+        {8, INF, 10, INF, INF, 0, INF},// Miraflores
+        {INF, 9, 11, INF, INF, INF, 0} // La Molina
+    };
+ 
+    // 2. Ejecutar Floyd-Warshall para obtener TODAS las rutas más cortas
+    for (int k = 0; k < n; k++)
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                if (D[i][k] + D[k][j] < D[i][j])
+                    D[i][j] = D[i][k] + D[k][j];
+ 
+    // Variables para buscar la sede con la mayor centralidad
+    int sede_optima = 0;
+    double max_centralidad = -1.0;
+    cout << "=== ANALISIS DE CENTRALIDAD DE CERCANIA ===" << endl;
+ 
+    // 3. Calcular la Longitud Total y la Normalizacion para cada nodo
+    for (int i = 0; i < n; i++) {
+        double longitud_total = 0;
+        for (int j = 0; j < n; j++)
+            if (i != j && D[i][j] != INF)
+                longitud_total += D[i][j];
+ 
+        double centralidad = (n - 1) / longitud_total;
+        cout << sedes[i] << " -> Suma Distancias: " << longitud_total
+             << " | Centralidad: " << centralidad << endl;
+ 
+        if (centralidad > max_centralidad) {
+            max_centralidad = centralidad;
+            sede_optima = i;
+        }
+    }
+ 
+    cout << "--------------------------------------------------------" << endl;
+    cout << "\n>>> PUNTO DE ABASTECIMIENTO PRINCIPAL SELECCIONADO <<<" << endl;
+    cout << "Sede: " << sedes[sede_optima] << endl;
+    cout << "Valor de Importancia (Mayor): " << max_centralidad << endl;
+    cout << "Razon: Es el nodo con menor esfuerzo acumulado de viaje hacia toda la red." << endl;
+    return 0;
+}
+```
+ 
+**Resolución — corriendo Floyd-Warshall a mano sobre esa matriz**, la
+suma de distancias mínimas desde cada sede hacia las otras 6 queda:
+ 
+| Sede | Suma de distancias | Centralidad $=6/\text{suma}$ |
+|---|---|---|
+| **San Isidro** | $5+7+4+6+8+14=44$ | $6/44=\mathbf{0.136}$  |
+| San Borja | $5+8+9+11+13+9=55$ | $6/55=0.109$ |
+| Surco | $7+8+11+13+10+11=60$ | $6/60=0.100$ |
+| Jesús María | $4+9+11+7+12+18=61$ | $6/61=0.098$ |
+| Lince | $6+11+13+7+14+20=71$ | $6/71=0.085$ |
+| Miraflores | $8+13+10+12+14+21=78$ | $6/78=0.077$ |
+| La Molina | $14+9+11+18+20+21=93$ | $6/93=0.065$ |
+ 
+**San Isidro es el punto de abastecimiento óptimo**: tiene la menor
+suma acumulada de distancias hacia el resto de sedes, y por lo tanto la
+mayor centralidad de cercanía. Se ve claro en el grafo — San Isidro es
+el único nodo con conexión **directa** a las otras cuatro sedes más
+cercanas ($SB, SU, JM, MI$), así que en promedio le toma menos esfuerzo
+de reparto llegar a cualquier otra sede que a cualquiera de sus
+competidoras dentro de la red.
