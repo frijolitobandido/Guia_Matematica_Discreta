@@ -58,12 +58,11 @@ pero se enfocan en cosas distintas:
 
 | | Ciclo de Euler | Ciclo de Hamilton |
 |---|---|---|
-| Recorre | **Todas las aristas** exactamente una vez | **Todos los vértices** exactamente una vez |
-| Repetición de vértices | Sí puede repetir vértices | No puede repetir (salvo el inicial al cerrar) |
+| Recorre | Todas las **aristas** exactamente una vez | Todos los **vértices** exactamente una vez |
+| Repetición de vértices | Permitida | No permitida (excepto el inicial al cerrar) |
 | Inicio/fin | Mismo vértice | Mismo vértice |
 | Se enfoca en | Aristas | Vértices |
-| Condición de existencia | Grafo conexo y **todos** los vértices de grado par | No hay criterio simple — decidirlo es **NP-completo** |
-| Bucles | Cada bucle cuenta como **2** en el grado | — |
+| Condición de existencia | Grafo conexo y **todos** los vértices de grado par | No hay un criterio simple: decidirlo es NP-completo |
 
 **Por qué la asimetría:** para Euler basta con revisar los grados de los
 vértices (rapidísimo). Para Hamilton no existe un atajo así — hay que
@@ -100,23 +99,27 @@ graph TD
 
 ### Resolución
 
-**Matriz de adyacencia:**
-
+**Matriz de adyacencia** (cuenta cuántas aristas conectan directamente cada par de vértices):
+ 
 | | a | b | c |
 |---|---|---|---|
 | a | 2 | 1 | 1 |
 | b | 1 | 0 | 2 |
 | c | 1 | 2 | 0 |
 
-**Matriz de incidencia:**
-
+**Matriz de incidencia** (filas = vértices, columnas = aristas; marca si el vértice es
+extremo de esa arista):
+ 
 | | e1 | e2 | e3 | e4 | e5 |
 |---|---|---|---|---|---|
 | a | 2 | 1 | 1 | 0 | 0 |
 | b | 0 | 1 | 0 | 1 | 1 |
 | c | 0 | 0 | 1 | 1 | 1 |
 
-
+**Regla clave:** un bucle o lazo (arista que sale y regresa al mismo vértice) cuenta
+como **2** en el grado de ese vértice (por eso en la matriz de adyacencia la
+diagonal de `a` vale 2), y también aparece como **2** en su propia columna de la
+matriz de incidencia.
 
 ---
 
@@ -383,39 +386,51 @@ nunca un **circuito** (cerrado).
 
 ## 9. Demostración: condición suficiente para que exista un circuito de Euler
 
-**Hipótesis:** $G=(V,E)$ es conexo, tiene más de un vértice, y **todo**
-vértice tiene grado par.
-
-**Objetivo:** demostrar que $G$ tiene un circuito de Euler.
-
-### Paso 1 — Existe al menos un ciclo simple
-
-Partiendo de cualquier vértice $v_0$ y caminando por aristas no usadas:
-como todo vértice tiene grado par, **siempre** habrá una arista de salida
-disponible cada vez que se entra a un vértice distinto de $v_0$ (se
-"gasta" una arista al entrar, pero como el grado es par, siempre queda
-otra para salir). El único lugar donde el recorrido puede "atascarse" es
-de vuelta en $v_0$. Esto garantiza un ciclo cerrado $C_1$.
-
-### Paso 2 — Si $C_1$ no cubre todas las aristas
-
-Se eliminan las aristas de $C_1$ de $G$, obteniendo $G'$. Quitar un ciclo
-resta exactamente 2 al grado de cada vértice que atraviesa (uno por
-entrar, uno por salir), así que **todos los vértices de $G'$ siguen
-teniendo grado par**.
-
-### Paso 3 — Conexión de subciclos (inducción)
-
-Como $G$ era conexo, $G'$ comparte al menos un vértice $u$ con $C_1$.
-Repitiendo el Paso 1 desde $u$ dentro de $G'$, se obtiene un nuevo ciclo
-$C_2$.
-
-### Paso 4 — Fusión
-
-Se recorre $C_1$ hasta llegar a $u$, ahí se inserta el recorrido completo
-de $C_2$, y se continúa el resto de $C_1$. El resultado es un solo
-circuito cerrado que recorre todas las aristas: el circuito de Euler.
-$\blacksquare$
+**Enunciado:** si $G=(V,E)$ es conexo, tiene más de un vértice, y **todos**
+sus vértices tienen grado par, entonces $G$ tiene un circuito de Euler.
+ 
+**Esta demostración se hace por inducción sobre el número de aristas de $G$.**
+ 
+### Caso base
+ 
+Si $G$ tiene el menor número de aristas posible cumpliendo la hipótesis (un
+ciclo simple, donde cada vértice tiene grado exactamente 2), entonces el
+propio ciclo **es** el circuito de Euler: recorre cada arista una sola vez y
+regresa al vértice inicial. El enunciado se cumple trivialmente.
+ 
+### Hipótesis inductiva
+ 
+Se asume que el enunciado es cierto para cualquier grafo conexo con todos los
+vértices de grado par que tenga **menos aristas** que $G$.
+ 
+### Paso inductivo
+ 
+**Paso 1 — Existe al menos un ciclo simple dentro de $G$:** partiendo de
+cualquier vértice $v_0$ y caminando por aristas no usadas, como todo vértice
+tiene grado par, siempre habrá una arista de salida disponible cada vez que
+se entra a un vértice distinto de $v_0$ (se "gasta" una arista al entrar,
+pero como el grado es par, siempre queda otra para salir). El único lugar
+donde el recorrido puede "atascarse" es de vuelta en $v_0$. Esto garantiza un
+ciclo cerrado $C_1$.
+ 
+**Paso 2 — Si $C_1$ no cubre todas las aristas de $G$:** se eliminan las
+aristas de $C_1$, obteniendo $G'$. Quitar un ciclo resta exactamente 2 al
+grado de cada vértice que atraviesa (uno por entrar, uno por salir), así que
+**todos los vértices de $G'$ siguen teniendo grado par**. Además, $G'$ tiene
+**menos aristas** que $G$ (le quitamos las de $C_1$).
+ 
+**Paso 3 — Aplicar la hipótesis inductiva:** como $G$ era conexo, cada
+componente de $G'$ comparte al menos un vértice con $C_1$ (porque antes de
+quitar $C_1$ todo estaba conectado a través de esas aristas). Cada componente
+de $G'$ es un grafo con todos los vértices de grado par y **menos aristas**
+que $G$ — por hipótesis inductiva, cada una **tiene su propio circuito de
+Euler**.
+ 
+**Paso 4 — Fusión:** se recorre $C_1$ hasta llegar a un vértice compartido
+$u$ con una componente de $G'$; ahí se inserta el circuito de Euler completo
+de esa componente, y se continúa el resto de $C_1$. Repitiendo esto para cada
+componente de $G'$, el resultado final es un solo circuito cerrado que
+recorre **todas** las aristas de $G$: el circuito de Euler. $\blacksquare$
 
 ```mermaid
 flowchart LR
@@ -443,3 +458,131 @@ La condición de que el grafo sea **conexo** es indispensable: sin
 conectividad podrían existir dos componentes separadas, cada una con
 todos sus vértices de grado par, pero sin forma de recorrerlas en un solo
 circuito.
+
+## 10 Recorridos y la matriz de potencias $A^r$
+
+**Enunciado:** si $A$ es la matriz de adyacencia de una gráfica (con aristas
+múltiples y lazos permitidos), entonces el número de **trayectorias
+diferentes de longitud $r$** de $V_i$ a $V_j$ es igual a la entrada
+$i$–$j$-ésima de la matriz $A^r$ (la matriz $A$ multiplicada por sí misma
+$r$ veces).
+
+### Ejemplo — grafo no dirigido
+ 
+```mermaid
+graph LR
+    A((A)) --- B((B))
+    B --- C((C))
+    A --- C
+ 
+    style A fill:#dbe9f8,stroke:#3f78b5
+    style B fill:#dbe9f8,stroke:#3f78b5
+    style C fill:#dbe9f8,stroke:#3f78b5
+```
+ 
+**Matriz de adyacencia $A$:**
+ 
+| | A | B | C |
+|---|---|---|---|
+| A | 0 | 1 | 1 |
+| B | 1 | 0 | 1 |
+| C | 1 | 1 | 0 |
+ 
+**Calculando $A^2 = A \times A$:**
+ 
+| | A | B | C |
+|---|---|---|---|
+| A | 2 | 1 | 1 |
+| B | 1 | 2 | 1 |
+| C | 1 | 1 | 2 |
+ 
+**Verificación manual:** $(A^2)[A][A]=2$ dice que hay 2 trayectorias de
+longitud 2 de $A$ a sí mismo: $A{-}B{-}A$ y $A{-}C{-}A$.  Y
+$(A^2)[A][B]=1$ dice que hay solo 1 trayectoria de longitud 2 de $A$ a $B$:
+$A{-}C{-}B$ (no cuenta $A{-}B$ porque esa es de longitud 1, no 2). 
+
+
+### Ejemplo — grafo dirigido
+ 
+```mermaid
+graph LR
+    A((A)) -->|1| B((B))
+    A -->|1| C((C))
+    B -->|1| C
+    C -->|1| A
+ 
+    style A fill:#dbe9f8,stroke:#3f78b5
+    style B fill:#dbe9f8,stroke:#3f78b5
+    style C fill:#dbe9f8,stroke:#3f78b5
+```
+ 
+**Matriz de adyacencia $A$** (fila = origen, columna = destino):
+ 
+| | A | B | C |
+|---|---|---|---|
+| A | 0 | 1 | 1 |
+| B | 0 | 0 | 1 |
+| C | 1 | 0 | 0 |
+ 
+**Calculando $A^2$:**
+ 
+| | A | B | C |
+|---|---|---|---|
+| A | 1 | 0 | 1 |
+| B | 1 | 0 | 0 |
+| C | 0 | 1 | 1 |
+ 
+**Verificación manual:** $(A^2)[A][A]=1$: la única trayectoria dirigida de
+longitud 2 de $A$ de vuelta a $A$ es $A\to C\to A$.  $(A^2)[C][C]=1$:
+$C\to A\to C$.  $(A^2)[C][B]=1$: $C\to A\to B$.  A diferencia del caso no
+dirigido, aquí el orden importa — $A^2[A][C]$ no tiene por qué ser igual a
+$A^2[C][A]$ (de hecho $A^2[A][C]=1$ y $A^2[C][A]=0$).
+ 
+### Código — cálculo de $A^r$ por multiplicación repetida de matrices
+ 
+```cpp
+#include <iostream>
+using namespace std;
+ 
+void multiplicar(int A[10][10], int B[10][10], int R[10][10], int n) {
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++) {
+            R[i][j] = 0;
+            for (int k = 0; k < n; k++)
+                R[i][j] += A[i][k] * B[k][j];
+        }
+}
+ 
+int main() {
+    int n, r;
+    int A[10][10], resultado[10][10], temp[10][10];
+ 
+    cout << "Numero de vertices: "; cin >> n;
+    cout << "Ingrese la matriz de adyacencia:\n";
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++) {
+            cin >> A[i][j];
+            resultado[i][j] = A[i][j]; // resultado = A^1
+        }
+ 
+    cout << "Longitud de trayectoria r: "; cin >> r;
+    for (int paso = 1; paso < r; paso++) {   // multiplica r-1 veces más
+        multiplicar(resultado, A, temp, n);
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                resultado[i][j] = temp[i][j];
+    }
+ 
+    cout << "\nMatriz A^" << r << " (numero de trayectorias de longitud " << r << "):\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) cout << resultado[i][j] << "\t";
+        cout << endl;
+    }
+    return 0;
+}
+```
+ 
+Este mismo código sirve **tanto para grafos dirigidos como no dirigidos** —
+la única diferencia está en cómo se construye la matriz `A` de entrada: si
+el grafo es no dirigido, `A` sale simétrica ($A[i][j]=A[j][i]$); si es
+dirigido, no tiene por qué serlo.
