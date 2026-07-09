@@ -39,28 +39,28 @@ graph TD
 La **altura** $h$ de un árbol es la distancia (en aristas) desde la raíz
 hasta el nivel más profundo.
 
-```mermaid
-graph TD
-    subgraph "V={a}, h=0"
-        a1((a))
-    end
-```
+**Árbol de altura $h=0$** ($V=\{a\}$):
 
 ```mermaid
 graph TD
-    subgraph "V={a,b}, h=1"
-        a2((a)) --- b2((b))
-    end
+    a1((a))
 ```
+
+**Árbol de altura $h=1$** ($V=\{a,b\}$):
 
 ```mermaid
 graph TD
-    subgraph "V={a,b,c,d,e}, h=2"
-        a3((a)) --- b3((b))
-        a3 --- c3((c))
-        b3 --- d3((d))
-        b3 --- e3((e))
-    end
+    a2((a)) --- b2((b))
+```
+
+**Árbol de altura $h=2$** ($V=\{a,b,c,d,e\}$):
+
+```mermaid
+graph TD
+    a3((a)) --- b3((b))
+    a3 --- c3((c))
+    b3 --- d3((d))
+    b3 --- e3((e))
 ```
 
 En el último árbol: $h(a)=h=2$ (la raíz está a 2 niveles de las hojas más
@@ -97,7 +97,7 @@ $$n = i + l$$
 
 **Caso base ($i=0$):** cero nodos internos significa que ningún nodo
 tiene hijos → el árbol es un solo nodo aislado (la raíz). Entonces
-$|V|=1$. Evaluando la fórmula: $|V| = m\cdot(0)+1 = 1$. ✅ Coincide.
+$|V|=1$. Evaluando la fórmula: $|V| = m\cdot(0)+1 = 1$.  Coincide.
 
 **Hipótesis inductiva:** se asume que la fórmula es válida para
 cualquier árbol $m$-ario completo con exactamente $k$ nodos internos:
@@ -488,101 +488,215 @@ Se repite en cada nodo hasta encontrar un lugar vacío, donde se inserta.
 
 #### 11.1 Rotación simple a la derecha (caso Izquierda-Izquierda)
 
-**Cuándo ocurre:** el desbalance viene de agregar un nodo en el subárbol
-izquierdo del hijo izquierdo — los tres nodos forman una línea recta
-hacia la izquierda.
+**Cuándo ocurre:** el nodo desbalanceado $A$ tiene $FE=-2$, y el
+desequilibrio viene de su hijo izquierdo $B$ (también cargado hacia la
+izquierda) — los tres nodos forman una línea recta hacia la izquierda.
+
+**Cómo funciona la rotación (mecánica):**
+
+1. $B$ (el hijo izquierdo de $A$) sube a ocupar el lugar de $A$.
+2. $A$ baja y se convierte en el **hijo derecho** de $B$.
+3. Si $B$ ya tenía un hijo derecho antes de rotar, ese hijo pasa a ser el
+   nuevo **hijo izquierdo** de $A$ (para no perderlo — por la regla del
+   ABB, ese subárbol tenía valores entre $B$ y $A$, así que ahí sigue
+   encajando).
+
+**Diagrama genérico:**
+
+**ANTES — desbalanceado:**
 
 ```mermaid
 graph TD
-    subgraph Antes["ANTES — desbalanceado"]
-        a1(("30 [FE=-2]")) --- a2(("20 [FE=-1]"))
-        a2 --- a3(("10 [FE=0]"))
-    end
+    a1(("30 [FE=-2]")) --- a2(("20 [FE=-1]"))
+    a2 --- a3(("10 [FE=0]"))
 ```
+
+**DESPUÉS — balanceado:**
 
 ```mermaid
 graph TD
-    subgraph Después["DESPUÉS — balanceado"]
-        b1(("20 [FE=0]")) --- b2(("10 [FE=0]"))
-        b1 --- b3(("30 [FE=0]"))
-    end
+    b1(("20 [FE=0]")) --- b2(("10 [FE=0]"))
+    b1 --- b3(("30 [FE=0]"))
 ```
 
-El nodo del medio (20) sube a ocupar el puesto del padre, y el padre
-(30) baja para convertirse en su hijo derecho.
+**Ejemplo — insertando 50, 40, 30 en ese orden:**
+
+```mermaid
+graph TD
+    e1(("50 [FE=-2]")) --- e2(("40 [FE=-1]"))
+    e2 --- e3(("30 [FE=0]"))
+```
+
+Se detecta $FE=-2$ en la raíz (50), con la cadena $50\to40\to30$ en
+línea recta hacia la izquierda → caso Izquierda-Izquierda. Se rota a la
+derecha sobre 50: **40** sube a la raíz, **50** baja como su hijo
+derecho, y **30** se queda como hijo izquierdo de 40:
+
+```mermaid
+graph TD
+    f1(("40 [FE=0]")) --- f2(("30 [FE=0]"))
+    f1 --- f3(("50 [FE=0]"))
+```
 
 #### 11.2 Rotación simple a la izquierda (caso Derecha-Derecha)
 
-**Cuándo ocurre:** el desbalance viene de agregar un nodo en el
-subárbol derecho del hijo derecho — línea recta hacia la derecha.
+**Cuándo ocurre:** el nodo desbalanceado $A$ tiene $FE=+2$, y el
+desequilibrio viene de su hijo derecho — línea recta hacia la derecha.
+
+**Cómo funciona la rotación (mecánica, espejo de la anterior):**
+
+1. El hijo derecho de $A$ sube a ocupar su lugar.
+2. $A$ baja y se convierte en el **hijo izquierdo** del que subió.
+3. Si el que subió ya tenía un hijo izquierdo, ese hijo pasa a ser el
+   nuevo **hijo derecho** de $A$.
+
+**Diagrama genérico:**
+
+**ANTES — desbalanceado:**
 
 ```mermaid
 graph TD
-    subgraph Antes2["ANTES — desbalanceado"]
-        c1(("10 [FE=+2]")) --- c2(("20 [FE=+1]"))
-        c2 --- c3(("30 [FE=0]"))
-    end
+    c1(("10 [FE=+2]")) --- c2(("20 [FE=+1]"))
+    c2 --- c3(("30 [FE=0]"))
 ```
+
+**DESPUÉS — balanceado:**
 
 ```mermaid
 graph TD
-    subgraph Después2["DESPUÉS — balanceado"]
-        d1(("20 [FE=0]")) --- d2(("10 [FE=0]"))
-        d1 --- d3(("30 [FE=0]"))
-    end
+    d1(("20 [FE=0]")) --- d2(("10 [FE=0]"))
+    d1 --- d3(("30 [FE=0]"))
 ```
 
-Mismo principio que la anterior, mirado en espejo: el nodo del medio
-(20) sube, y el padre (10) baja como hijo izquierdo.
+**Ejemplo — insertando 10, 20, 30 en ese orden:**
+
+```mermaid
+graph TD
+    g1(("10 [FE=+2]")) --- g2(("20 [FE=+1]"))
+    g2 --- g3(("30 [FE=0]"))
+```
+
+Se detecta $FE=+2$ en la raíz (10), con la cadena $10\to20\to30$ en
+línea recta hacia la derecha → caso Derecha-Derecha. Se rota a la
+izquierda sobre 10: **20** sube a la raíz, **10** baja como su hijo
+izquierdo, y **30** se queda como hijo derecho de 20:
+
+```mermaid
+graph TD
+    h1(("20 [FE=0]")) --- h2(("10 [FE=0]"))
+    h1 --- h3(("30 [FE=0]"))
+```
 
 #### 11.3 Rotación doble Izquierda-Derecha (caso ID)
 
-**Cuándo ocurre:** un "zigzag" — primero hacia la izquierda y luego
-hacia la derecha (ej. $30 \to 10 \to 20$).
+**Cuándo ocurre:** un "zigzag" — el hijo izquierdo de $A$ está cargado
+hacia la **derecha** (signos de FE contrarios entre padre e hijo).
+
+**Cómo funciona la rotación (dos pasos):**
+
+1. **Primero**, una rotación simple a la **izquierda** sobre el hijo
+   izquierdo de $A$ — esto "endereza" el zigzag convirtiéndolo en una
+   línea recta (caso Izquierda-Izquierda).
+2. **Luego**, una rotación simple a la **derecha** sobre $A$, igual que
+   en la sección 11.1. El "nieto" (el nodo que estaba en medio del
+   zigzag) termina siendo la nueva raíz del subárbol.
+
+**Diagrama genérico:**
+
+**ANTES — desbalanceado (zigzag):**
 
 ```mermaid
 graph TD
-    subgraph Antes3["ANTES — desbalanceado (zigzag)"]
-        e1(("30 [FE=-2]")) --- e2(("10 [FE=+1]"))
-        e2 --- e3(("20 [FE=0]"))
-    end
+    e1(("30 [FE=-2]")) --- e2(("10 [FE=+1]"))
+    e2 --- e3(("20 [FE=0]"))
 ```
+
+**DESPUÉS — balanceado:**
 
 ```mermaid
 graph TD
-    subgraph Después3["DESPUÉS — balanceado"]
-        f1(("20 [FE=0]")) --- f2(("10 [FE=0]"))
-        f1 --- f3(("30 [FE=0]"))
-    end
+    f1(("20 [FE=0]")) --- f2(("10 [FE=0]"))
+    f1 --- f3(("30 [FE=0]"))
 ```
 
-**Movimiento en 2 pasos:** primero el 20 sube y el 10 baja (para
-estirarlo a línea recta), y luego el 20 vuelve a subir mientras el 30
-baja. El "nieto" (20) termina siendo la nueva raíz del subárbol.
+**Ejemplo — insertando 50, 20, 30 en ese orden:**
+
+$50$ es la raíz; $20<50$ va a su izquierda; $30$ es mayor que $20$ pero
+menor que $50$, así que entra como hijo **derecho** de 20 — ahí nace el
+zigzag:
+
+```mermaid
+graph TD
+    i1(("50 [FE=-2]")) --- i2(("20 [FE=+1]"))
+    i2 --- i3(("30 [FE=0]"))
+```
+
+$FE=-2$ en 50, con el hijo izquierdo (20) cargado hacia la derecha →
+caso Izquierda-Derecha. **Paso 1** (rotación simple izquierda sobre 20):
+30 sube y 20 baja como su hijo izquierdo. **Paso 2** (rotación simple
+derecha sobre 50): 30 sube a la raíz, 50 baja como su hijo derecho, y 20
+queda como su hijo izquierdo:
+
+```mermaid
+graph TD
+    j1(("30 [FE=0]")) --- j2(("20 [FE=0]"))
+    j1 --- j3(("50 [FE=0]"))
+```
 
 #### 11.4 Rotación doble Derecha-Izquierda (caso DI)
 
-**Cuándo ocurre:** zigzag en sentido contrario — primero a la derecha y
-luego a la izquierda (ej. $10 \to 30 \to 20$).
+**Cuándo ocurre:** zigzag en sentido contrario — el hijo derecho de $A$
+está cargado hacia la **izquierda**.
+
+**Cómo funciona la rotación (dos pasos, espejo del caso anterior):**
+
+1. **Primero**, una rotación simple a la **derecha** sobre el hijo
+   derecho de $A$ — endereza el zigzag (queda como caso
+   Derecha-Derecha).
+2. **Luego**, una rotación simple a la **izquierda** sobre $A$, igual
+   que en la sección 11.2. El "nieto" del zigzag termina siendo la
+   nueva raíz.
+
+**Diagrama genérico:**
+
+**ANTES — desbalanceado (zigzag):**
 
 ```mermaid
 graph TD
-    subgraph Antes4["ANTES — desbalanceado (zigzag)"]
-        g1(("10 [FE=+2]")) --- g2(("30 [FE=-1]"))
-        g2 --- g3(("20 [FE=0]"))
-    end
+    g1(("10 [FE=+2]")) --- g2(("30 [FE=-1]"))
+    g2 --- g3(("20 [FE=0]"))
 ```
+
+**DESPUÉS — balanceado:**
 
 ```mermaid
 graph TD
-    subgraph Después4["DESPUÉS — balanceado"]
-        h1(("20 [FE=0]")) --- h2(("10 [FE=0]"))
-        h1 --- h3(("30 [FE=0]"))
-    end
+    h1(("20 [FE=0]")) --- h2(("10 [FE=0]"))
+    h1 --- h3(("30 [FE=0]"))
 ```
 
-Igual que el caso anterior mirado en espejo: el "nieto" (20) termina
-siendo la nueva raíz, con 10 a su izquierda y 30 a su derecha.
+**Ejemplo — insertando 20, 50, 30 en ese orden:**
+
+$20$ es la raíz; $50>20$ va a su derecha; $30$ es mayor que $20$ pero
+menor que $50$, así que entra como hijo **izquierdo** de 50 — zigzag:
+
+```mermaid
+graph TD
+    k1(("20 [FE=+2]")) --- k2(("50 [FE=-1]"))
+    k2 --- k3(("30 [FE=0]"))
+```
+
+$FE=+2$ en 20, con el hijo derecho (50) cargado hacia la izquierda →
+caso Derecha-Izquierda. **Paso 1** (rotación simple derecha sobre 50):
+30 sube y 50 baja como su hijo derecho. **Paso 2** (rotación simple
+izquierda sobre 20): 30 sube a la raíz, 20 baja como su hijo izquierdo,
+y 50 queda como su hijo derecho:
+
+```mermaid
+graph TD
+    l1(("30 [FE=0]")) --- l2(("20 [FE=0]"))
+    l1 --- l3(("50 [FE=0]"))
+```
 
 ---
 
@@ -627,9 +741,9 @@ graph TD
 |---|---|---|---|
 | 9 | −1 (vacío) | −1 (vacío) | 0 |
 | 15 | 0 (nodo 9) | −1 (vacío) | −1 |
-| 20 | 1 (subárbol 15-9) | −1 (vacío) | −2 ⚠️ |
+| 20 | 1 (subárbol 15-9) | −1 (vacío) | −2  |
 | 40 | −1 | −1 | 0 |
-| **35** | 2 (subárbol 20-15-9) | 0 (nodo 40) | **−2 ⚠️** |
+| **35** | 2 (subárbol 20-15-9) | 0 (nodo 40) | **−2 ** |
 
 Los nodos **20** y **35** están desbalanceados ($|FE|>1$). Como el
 desequilibrio viene de una cadena recta hacia la izquierda
@@ -664,7 +778,7 @@ hijo $9$) se queda como hijo izquierdo de $20$.
 | 40 | −1 | −1 | 0 |
 | 15 | 0 (nodo 9) | −1 | −1 |
 | 35 | −1 | 0 (nodo 40) | 1 |
-| **20** | 1 (subárbol 15-9) | 1 (subárbol 35-40) | **0** ✅ |
+| **20** | 1 (subárbol 15-9) | 1 (subárbol 35-40) | **0**  |
 
 Todos los nodos quedan con $FE \in \{-1,0,1\}$: **el árbol ya es AVL
 válido**.
