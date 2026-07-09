@@ -1,198 +1,670 @@
-# 3. Árboles
+# Árboles — Guía a detalle
 
-## 3.1 Definición y terminología
+> Cubre todos los subtemas de árboles vistos en el material: definición,
+> alturas, teoremas de conteo (con demostración), camino único, longitud
+> de camino externo, recorridos, árboles de búsqueda binaria (ABB),
+> eliminación, factor de equilibrio y las 4 rotaciones AVL, cerrando con
+> un ejercicio integrador completo.
 
-Un árbol es un grafo (no dirigido) que es:
+---
 
-- **Conexo** (hay un camino entre cualquier par de nodos), y
-- **Acíclico** (no tiene ciclos).
+## 1. Definición y terminología
 
-Consecuencia: existe **exactamente un** camino entre cualquier par de
-vértices (ver demostración en 3.5).
+Un árbol es una estructura de datos (y también un tipo especial de
+grafo) formada por nodos conectados entre sí, donde:
 
-| Término | Significado |
-|---|---|
-| Raíz | Nodo principal, sin padre |
-| Padre de B | Nodo del que "cuelga" B |
-| Hijos de A | Nodos que cuelgan directamente de A |
-| Hoja | Nodo sin hijos |
-| Altura $h(v)$ | Distancia (en aristas) desde $v$ hasta la hoja más lejana de su subárbol |
+- Hay un nodo principal llamado **raíz**.
+- Cada nodo puede tener **hijos**.
+- **No existen ciclos** (no puedes volver al mismo nodo siguiendo
+  enlaces).
+- Existe un **único camino** entre dos nodos cualesquiera (esto se
+  demuestra en la sección 6).
 
-## 3.2 Teorema del m-árbol completo: $|V| = m \cdot i + 1$
+```mermaid
+graph TD
+    A((A)) --- B((B))
+    A --- C((C))
 
-Un **m-árbol completo** es aquel en que todo nodo interno tiene exactamente
-$m$ hijos.
+    style A fill:#3f78b5,color:#fff
+```
 
-**Demostración por inducción sobre $i$ (número de nodos internos):**
+- **Padre de B:** A. **Padre de C:** A.
+- **Hijos de A:** B y C.
+- **Hoja:** un nodo sin hijos (aquí, B y C son hojas).
 
-**Caso base ($i=0$):** sin nodos internos, el árbol es solo la raíz, así que
-$|V|=1$. La fórmula da $m \cdot 0 + 1 = 1$. ✔
+---
 
-**Hipótesis inductiva:** para un árbol con $k$ nodos internos, $|V_k| = m\cdot k + 1$.
+## 2. Vértices y alturas
 
-**Paso inductivo:** al convertir una hoja en nodo interno se le agregan
-exactamente $m$ hijos nuevos. Esto aumenta los nodos internos de $k$ a $k+1$,
-y el total de vértices en $m$ (los hijos nuevos):
+La **altura** $h$ de un árbol es la distancia (en aristas) desde la raíz
+hasta el nivel más profundo.
 
-$$|V_{k+1}| = |V_k| + m = (m\cdot k + 1) + m = m\cdot(k+1) + 1 \qquad\blacksquare$$
+```mermaid
+graph TD
+    subgraph "V={a}, h=0"
+        a1((a))
+    end
+```
 
-## 3.3 Relación $n = i + l$
+```mermaid
+graph TD
+    subgraph "V={a,b}, h=1"
+        a2((a)) --- b2((b))
+    end
+```
 
-Todo nodo de un árbol es **interno** (tiene hijos) o **hoja** (no tiene hijos)
-— no hay una tercera categoría. Por lo tanto, el total de nodos $n$ es
-simplemente la suma:
+```mermaid
+graph TD
+    subgraph "V={a,b,c,d,e}, h=2"
+        a3((a)) --- b3((b))
+        a3 --- c3((c))
+        b3 --- d3((d))
+        b3 --- e3((e))
+    end
+```
+
+En el último árbol: $h(a)=h=2$ (la raíz está a 2 niveles de las hojas más
+profundas), $h(b)=h(c)=1$, y $h(d)=h(e)=0$ (son hojas, altura 0).
+
+---
+
+## 3. Teorema: $|V| = m \cdot i + 1$ (árbol $m$-ario completo)
+
+**Enunciado:** en un árbol $m$-ario **completo** (cada nodo interno tiene
+exactamente $m$ hijos), se cumple:
+
+$$|V| = m \cdot i + 1$$
+
+donde $|V|$ = número total de vértices, $m$ = cantidad exacta de hijos
+por nodo interno, $i$ = cantidad de nodos internos.
+
+**Por qué:** cada uno de los $i$ nodos internos "genera" exactamente $m$
+hijos nuevos. Empezando de 1 sola raíz, el total de nodos creados por
+esos hijos es $m \cdot i$, y sumando la raíz original se llega a
+$m \cdot i + 1$.
+
+---
+
+## 4. Relación $n = i + l$ y su fórmula asociada
+
+**Regla de oro:** en cualquier árbol, todo nodo es de uno de dos tipos:
+**interno** ($i$, tiene hijos) o **hoja** ($l$, no tiene hijos). No hay
+un tercer tipo, así que:
 
 $$n = i + l$$
 
-**Combinando con 3.2:** igualando $m\cdot i + 1 = i + l$ y despejando:
+### Demostración de $|V| = m\cdot i + 1$ por inducción
 
-$$i = \frac{l-1}{m-1} \qquad\qquad n = \frac{ml-1}{m-1}$$
+**Caso base ($i=0$):** cero nodos internos significa que ningún nodo
+tiene hijos → el árbol es un solo nodo aislado (la raíz). Entonces
+$|V|=1$. Evaluando la fórmula: $|V| = m\cdot(0)+1 = 1$. ✅ Coincide.
 
-## 3.4 Cota de hojas según la altura: $l \le m^h$
+**Hipótesis inductiva:** se asume que la fórmula es válida para
+cualquier árbol $m$-ario completo con exactamente $k$ nodos internos:
+$|V_k| = m\cdot k + 1$.
 
-**Caso base ($h=0$):** un árbol de altura 0 es un único nodo, que además es
-hoja: $l=1$. La fórmula da $m^0=1$. ✔
+**Paso inductivo ($i=k+1$):** para pasar de $k$ a $k+1$ nodos internos,
+se toma una **hoja** existente y se convierte en nodo interno agregándole
+exactamente $m$ hijos nuevos (para que el árbol siga siendo completo):
 
-**Hipótesis inductiva:** un árbol de altura $k$ tiene, como máximo, $m^k$ hojas.
+```mermaid
+graph LR
+    subgraph Antes["Antes: hoja"]
+        h1((hoja))
+    end
+    subgraph Después["Después: nodo interno + m hijos"]
+        h2((antes hoja)) --- c1((hijo1))
+        h2 --- c2((hijo2))
+        h2 --- c3(("... hijo m"))
+    end
+```
 
-**Paso inductivo:** un árbol de altura $k+1$ tiene, como máximo, $m$ subárboles
-(uno por cada hijo de la raíz), y cada uno tiene altura máxima $k$. Por la
-hipótesis, cada subárbol aporta como máximo $m^k$ hojas. Sumando los $m$
-subárboles:
+- Los nodos internos suben de $k$ a $k+1$.
+- El total de vértices aumenta exactamente en $m$ (los hijos nuevos):
+  $$|V_{k+1}| = |V_k| + m$$
+- Sustituyendo la hipótesis inductiva $|V_k| = mk+1$:
+  $$|V_{k+1}| = (mk+1) + m = mk+m+1 = m(k+1)+1$$
 
-$$l \le \underbrace{m^k + m^k + \dots + m^k}_{m\ \text{veces}} = m \cdot m^k = m^{k+1} \qquad\blacksquare$$
+Esto es exactamente la fórmula evaluada en $i=k+1$. Como el caso base se
+cumple y el paso inductivo preserva la fórmula, queda demostrada para
+cualquier $i$. $\blacksquare$
 
-## 3.5 Camino único entre dos vértices
+### Fórmulas derivadas (en función del número de hojas $l$)
 
-**Existencia:** por definición, un árbol es conexo, así que siempre existe
-al menos un camino entre dos vértices cualesquiera $a$ y $b$.
+Partiendo de $n=i+l$ y de $|V|=mi+1$ (que son la misma cantidad $n=|V|$),
+se igualan:
 
-**Unicidad (por reducción al absurdo):** supongamos que existen dos caminos
-distintos $C_1$ y $C_2$ entre $a$ y $b$. Ambos comienzan en $a$ y terminan en
-$b$, así que en algún punto se separan y luego vuelven a coincidir. Recorrer
-$C_1$ desde el punto de separación hasta el de reencuentro, y regresar por
-$C_2$, forma un **ciclo** — pero un árbol es acíclico por definición. Esto es
-una contradicción, así que el camino debe ser único. $\blacksquare$
+$$m\cdot i + 1 = i + l$$
 
-## 3.6 Cantidad de nodos en un m-árbol totalmente completo
+Se agrupan las $i$ a un lado:
 
-Contando nodo por nivel: el nivel 0 (raíz) tiene $1=m^0$ nodo, el nivel 1
-tiene $m^1$, el nivel 2 tiene $m^2$, ..., hasta el nivel $h$ (las hojas) con
-$m^h$ nodos. El total es la suma de una **serie geométrica**:
+$$m\cdot i - i = l - 1 \quad\Rightarrow\quad i(m-1) = l-1$$
 
-$$N = 1 + m + m^2 + \dots + m^h = \sum_{k=0}^{h} m^k = \frac{m^{h+1}-1}{m-1}$$
+$$\boxed{i = \dfrac{l-1}{m-1}}$$
 
-## 3.7 Longitud de camino externo (LCE)
+Y sustituyendo de vuelta en $n = i+l$:
 
-Suma de las distancias desde la raíz hasta cada nodo especial (hoja) del árbol:
+$$\boxed{n = \dfrac{l-1}{m-1} + l = \dfrac{ml-1}{m-1}}$$
+
+---
+
+## 5. Cota de hojas: $l \le m^h$
+
+**Enunciado:** en un árbol $m$-ario de altura $h$, el número de hojas
+$l$ nunca puede superar $m^h$.
+
+### Demostración por inducción sobre la altura
+
+**Caso base ($h=0$):** un árbol de altura 0 es un solo nodo (la raíz),
+que automáticamente es una hoja: $l=1$. Evaluando: $m^0=1$. Como
+$1 \le 1$, se cumple. ✅
+
+**Hipótesis inductiva:** se asume que para cualquier árbol de altura $k$,
+su cantidad de hojas cumple $l_k \le m^k$.
+
+**Paso inductivo ($h=k+1$):** imagina un árbol $T$ de altura $k+1$. Si
+se quita la raíz, quedan como máximo $m$ subárboles (uno por cada hijo
+de la raíz), y cada uno de ellos tiene, a lo más, altura $k$:
+
+```mermaid
+graph TD
+    R((raíz, altura k+1)) --- T1(("T1, altura ≤ k"))
+    R --- T2(("T2, altura ≤ k"))
+    R --- T3(("... Tm, altura ≤ k"))
+```
+
+Por hipótesis inductiva, cada subárbol $T_i$ tiene, como mucho, $m^k$
+hojas. El total de hojas del árbol completo es la suma de las hojas de
+todos sus subárboles:
+
+$$l = l_{T_1} + l_{T_2} + \dots + l_{T_m} \le \underbrace{m^k + m^k + \dots + m^k}_{m \text{ veces}} = m \cdot m^k = m^{k+1}$$
+
+Por lo tanto $l \le m^{k+1}$, que es justo la fórmula evaluada en
+$h=k+1$. $\blacksquare$
+
+---
+
+## 6. Camino único entre dos vértices de un árbol
+
+**Enunciado:** si $a,b$ son vértices distintos de un árbol $A$, existe
+un **único** camino que los conecta.
+
+Se demuestran dos cosas por separado: que el camino **existe**, y que es
+**el único** posible.
+
+### Existencia
+
+- **Premisa:** por definición, un árbol es un grafo **conexo**.
+- **Consecuencia:** la definición de grafo conexo dice que para
+  cualquier par de vértices distintos siempre se puede encontrar una
+  secuencia de aristas que los conecte.
+- **Conclusión:** el camino entre $a$ y $b$ existe.
+
+### Unicidad (por reducción al absurdo)
+
+Se supone lo **contrario** de lo que se quiere probar, y se llega a una
+contradicción:
+
+- **Suposición:** existen **dos** caminos diferentes, $C_1$ y $C_2$, que
+  conectan a $a$ con $b$.
+
+```mermaid
+graph LR
+    a((a)) -.->|"C1"| b((b))
+    a -.->|"C2 (distinto)"| b
+```
+
+- Ambos caminos comienzan juntos en $a$ y terminan juntos en $b$. Como
+  son diferentes, en algún punto intermedio tienen que **separarse**, y
+  como ambos llegan al mismo destino, en algún momento posterior tienen
+  que **volver a juntarse**.
+- **La contradicción:** si recorres $C_1$ desde el punto de separación
+  hasta el punto de unión, y luego regresas al inicio usando $C_2$,
+  acabas de recorrer una trayectoria **cerrada sin repetir aristas** —
+  es decir, un **ciclo**.
+- Pero por definición, un árbol es **acíclico** (nunca puede tener
+  ciclos). Contradicción.
+
+**Conclusión:** la suposición de que existían dos caminos distintos es
+falsa. El camino entre $a$ y $b$ es **único**. $\blacksquare$
+
+---
+
+## 7. Longitud de camino externo (LCE)
+
+**Definición:** la longitud de camino externo de un árbol extendido es
+la suma de las distancias (en aristas) desde la raíz hasta cada uno de
+los **nodos especiales** (u hojas especiales):
 
 $$LCE = \sum_{i=0}^{h} ne_i \cdot i$$
 
-donde $ne_i$ es la cantidad de nodos especiales en el nivel $i$. La
-demostración por inducción sigue el mismo patrón que 3.4: al agregar un nivel
-$k+1$, se suma el aporte de los nuevos nodos especiales a la distancia
-acumulada de los niveles anteriores.
+donde $i$ es el nivel actual, $h$ la altura máxima del árbol, y $ne_i$
+la cantidad de nodos especiales en el nivel $i$.
 
-## 3.8 Recorridos: preorden, inorden, posorden
+### Demostración por inducción (sobre la altura $h$)
 
-Para el árbol de ejemplo:
+**Caso base ($h=0$):** el árbol más pequeño posible es un solo nodo raíz
+que a su vez es un nodo especial: $ne_0=1$. La distancia de la raíz a sí
+misma es $0$ aristas, así que $LCE=0$ manualmente. Evaluando la fórmula:
 
-```
-        J
-      /   \
-     E     T
-    / \   / \
-   A   H M   V
-```
+$$LCE = \sum_{i=0}^{0} ne_i \cdot i = ne_0 \cdot 0 = 1 \cdot 0 = 0$$
 
-| Recorrido | Orden de visita | Regla |
-|---|---|---|
-| Preorden | J, E, A, H, T, M, V | raíz → izquierda → derecha |
-| Inorden | A, E, H, J, M, T, V | izquierda → raíz → derecha |
-| Posorden | A, H, E, M, V, T, J | izquierda → derecha → raíz |
+Ambos valores coinciden. ✅
 
-**Para reforzar:** el **inorden** es especialmente importante en un árbol de
-búsqueda binaria, porque siempre produce los valores **ordenados de menor a
-mayor** — es la forma estándar de verificar si un ABB está bien construido.
+**Hipótesis inductiva:** para un árbol de altura $k$, se cumple
+$LCE_k = \sum_{i=0}^{k} ne_i \cdot i$.
 
-## 3.9 Árbol de búsqueda binaria (ABB)
+**Paso inductivo ($h=k+1$):** al crecer el árbol de altura $k$ a $k+1$,
+los nodos especiales de los niveles $0$ a $k-1$ no cambian. Aparece un
+nuevo nivel $k+1$ con $ne_{k+1}$ nodos especiales nuevos, cada uno a
+distancia $k+1$ de la raíz. El nuevo total es el valor anterior más el
+aporte del nivel nuevo:
 
-**Propiedad:** para cada nodo, todo el subárbol izquierdo tiene valores
-menores, y todo el subárbol derecho tiene valores mayores.
+$$LCE_{k+1} = LCE_k + \big(ne_{k+1}\cdot(k+1)\big) = \left(\sum_{i=0}^{k} ne_i\cdot i\right) + ne_{k+1}\cdot(k+1) = \sum_{i=0}^{k+1} ne_i\cdot i$$
 
-**Inserción:** comparar con la raíz; si el nuevo valor es menor, ir a la
-izquierda; si es mayor, ir a la derecha; repetir hasta encontrar un espacio
-vacío.
+que es exactamente la fórmula evaluada en $h=k+1$. $\blacksquare$
 
-**Eliminación** — tres casos:
+### Ejemplo numérico
 
-1. **Nodo hoja:** se elimina directamente.
-2. **Nodo con un hijo:** el hijo ocupa el lugar del nodo eliminado.
-3. **Nodo con dos hijos:** se reemplaza por su **sucesor inorden** (el menor
-   valor de su subárbol derecho) o su **predecesor inorden** (el mayor valor
-   de su subárbol izquierdo), y luego se elimina ese sucesor/predecesor de su
-   posición original.
+```mermaid
+graph TD
+    R((raíz, nivel 0)) --- N1((nivel 1))
+    R --- N2((nivel 1))
+    N1 --- N3((nivel 2))
 
-## 3.10 AVL: factor de equilibrio y rotaciones
-
-**Factor de equilibrio:**
-
-$$FE(v) = h(\text{subárbol derecho}) - h(\text{subárbol izquierdo})$$
-
-Un árbol AVL exige que $FE \in \{-1, 0, 1\}$ en todo nodo. Si al insertar un
-valor algún nodo queda con $|FE| = 2$, se debe **rotar**:
-
-| Caso | Cuándo ocurre | Rotación |
-|---|---|---|
-| Izquierda-Izquierda | $FE=-2$, hijo izquierdo con $FE \le 0$ | Rotación simple a la derecha |
-| Derecha-Derecha | $FE=+2$, hijo derecho con $FE \ge 0$ | Rotación simple a la izquierda |
-| Izquierda-Derecha | $FE=-2$, hijo izquierdo con $FE>0$ | Rotación doble izquierda-derecha (RDI) |
-| Derecha-Izquierda | $FE=+2$, hijo derecho con $FE<0$ | Rotación doble derecha-izquierda (RDD) |
-
-**Para reforzar:** el propósito del balanceo AVL es garantizar que la altura
-del árbol se mantenga en $O(\log n)$, para que las búsquedas, inserciones y
-eliminaciones sean siempre rápidas, incluso en el peor caso. Un ABB normal
-(sin balanceo) puede degenerar en una lista enlazada si se insertan los datos
-ya ordenados, haciendo que las operaciones tarden $O(n)$ en vez de
-$O(\log n)$.
-
-## 3.11 Codificación de Huffman
-
-**Objetivo:** asignar códigos binarios de longitud variable a un conjunto de
-caracteres, usando **menos bits** para los caracteres más frecuentes, de modo
-que ningún código sea prefijo de otro (esto se llama código libre de
-prefijos, y permite decodificar sin ambigüedad).
-
-**El material original muestra el árbol resultante, pero no el algoritmo
-paso a paso para construirlo. Aquí se completa:**
-
-```pseudocódigo
-Algoritmo_Huffman(caracteres, frecuencias)
-  crear una cola de prioridad (min-heap) con un nodo hoja por cada carácter,
-  usando su frecuencia como prioridad
-
-  MIENTRAS haya más de un nodo en la cola:
-    extraer los dos nodos de menor frecuencia: A y B
-    crear un nuevo nodo interno N con frecuencia = frecuencia(A) + frecuencia(B)
-    hacer que A sea el hijo izquierdo de N (rama "0")
-    hacer que B sea el hijo derecho de N (rama "1")
-    insertar N de vuelta en la cola de prioridad
-
-  el único nodo que queda es la raíz del árbol de Huffman
-FIN Algoritmo
+    style R fill:#e0645c,color:#fff
+    style N1 fill:#e0645c,color:#fff
+    style N2 fill:#e0645c,color:#fff
+    style N3 fill:#e0645c,color:#fff
 ```
 
-El código de cada carácter se obtiene leyendo las ramas (0 o 1) desde la raíz
-hasta su hoja.
+Si **todos** los nodos son especiales: $ne_0=1$ (la raíz), $ne_1=2$,
+$ne_2=1$. Aplicando la fórmula:
 
-**Ejemplo con las frecuencias del curso:**
+$$LCE = (1\cdot 0) + (2\cdot 1) + (1\cdot 2) = 0+2+2 = 4$$
 
-| Carácter | a | b | c | d | e | f |
-|---|---|---|---|---|---|---|
-| Frecuencia (miles) | 45 | 13 | 12 | 16 | 9 | 5 |
+---
 
-Con codificación de **longitud fija** (todas las hojas al mismo nivel) cada
-carácter usa 3 bits. Con Huffman (**longitud variable**), `a` (la más
-frecuente) queda con solo 1 bit, mientras que `e` y `f` (las menos
-frecuentes) usan 4 bits — el promedio ponderado de bits por carácter resulta
-mucho menor que con longitud fija, lo que comprime el mensaje.
+## 8. Recorridos: Preorden, Inorden, Posorden
+
+```mermaid
+graph TD
+    J((J)) --- E((E))
+    J --- T((T))
+    E --- A((A))
+    E --- H((H))
+    T --- M((M))
+    T --- V((V))
+
+    style J fill:#3f78b5,color:#fff
+```
+
+- **Preorden** (raíz → izquierda → derecha): visita la raíz primero,
+  desciende por la izquierda hasta donde se pueda, y cuando ya no puede
+  seguir, se mueve a la derecha y repite.
+  $$\text{Preorden} = J\text{-}E\text{-}A\text{-}H\text{-}T\text{-}M\text{-}V$$
+
+- **Inorden** (izquierda → raíz → derecha): visita primero el subárbol
+  izquierdo por completo, luego la raíz, y por último el subárbol
+  derecho.
+  $$\text{Inorden} = A\text{-}E\text{-}H\text{-}J\text{-}M\text{-}T\text{-}V$$
+
+- **Posorden** (izquierda → derecha → raíz): visita primero el subárbol
+  izquierdo, luego el derecho, y **al final** la raíz.
+  $$\text{Posorden} = A\text{-}H\text{-}E\text{-}M\text{-}V\text{-}T\text{-}J$$
+
+---
+
+## 9. Árbol de Búsqueda Binaria (ABB)
+
+**Regla de oro:** para **cualquier** nodo del árbol se deben cumplir
+estas tres condiciones:
+
+- **Lado izquierdo menor:** todos los nodos del subárbol izquierdo
+  tienen un valor **menor** que el del nodo.
+- **Lado derecho mayor:** todos los nodos del subárbol derecho tienen un
+  valor **mayor** que el del nodo.
+- **Propiedad hereditaria:** esta regla se aplica exactamente igual a
+  **cada** subnodo del árbol, no solo a la raíz.
+
+### Ejemplo — construcción insertando 18, 23, 22, 19, 29, 24, 31
+
+Cada número nuevo entra comparando desde la raíz: si es menor, va a la
+izquierda; si es mayor, a la derecha; y se repite en cada nodo hasta
+encontrar un espacio libre.
+
+```mermaid
+graph TD
+    n18((18)) --- n23((23))
+    n23 --- n22((22))
+    n23 --- n29((29))
+    n22 --- n19((19))
+    n29 --- n24((24))
+    n29 --- n31((31))
+
+    style n18 fill:#3f78b5,color:#fff
+```
+
+> *(Nota: un ABB estándar no admite claves duplicadas; por eso esta
+> reconstrucción usa la secuencia sin repetir el 19 y el 22 que aparecían
+> dos veces en el material original.)*
+
+---
+
+## 10. Eliminación en un ABB
+
+Hay **tres casos**, según cuántos hijos tenga el nodo a eliminar:
+
+1. **Nodo hoja (sin hijos):** se elimina directamente.
+2. **Nodo con un hijo:** el hijo pasa a ocupar el lugar del nodo
+   eliminado.
+3. **Nodo con dos hijos:** se reemplaza por su **sucesor inorden** (el
+   valor más pequeño de su subárbol derecho) o por su **predecesor
+   inorden** (el valor más grande de su subárbol izquierdo).
+
+### Árbol inicial
+
+```mermaid
+graph TD
+    n120((120)) --- n87((87))
+    n120 --- n140((140))
+    n87 --- n43((43))
+    n87 --- n99((99))
+    n140 --- n130((130))
+    n43 --- n22((22))
+    n43 --- n65((65))
+    n99 --- n93((93))
+    n130 --- n135((135))
+    n93 --- n56((56))
+```
+
+### Paso 1 — Eliminar 22
+
+El 22 es una **hoja** (no tiene hijos). Se elimina directamente, sin
+afectar al resto del árbol.
+
+```mermaid
+graph TD
+    n120((120)) --- n87((87))
+    n120 --- n140((140))
+    n87 --- n43((43))
+    n87 --- n99((99))
+    n140 --- n130((130))
+    n43 --- n65((65))
+    n99 --- n93((93))
+    n130 --- n135((135))
+    n93 --- n56((56))
+
+    style n43 fill:#f5a742,color:#fff
+```
+
+### Paso 2 — Eliminar 99
+
+El 99 tiene **un solo hijo**: 93. Por la regla del ABB, el padre (87)
+deja de apuntar a 99 y apunta directamente a 93.
+
+```mermaid
+graph TD
+    n120((120)) --- n87((87))
+    n120 --- n140((140))
+    n87 --- n43((43))
+    n87 --- n93((93))
+    n140 --- n130((130))
+    n43 --- n65((65))
+    n130 --- n135((135))
+    n93 --- n56((56))
+
+    style n87 fill:#f5a742,color:#fff
+```
+
+### Paso 3 — Eliminar 87
+
+El 87 tiene **dos hijos** (43 y 93). Se reemplaza por su **sucesor
+inorden**: el valor más pequeño del subárbol derecho (93). Como 93 no
+tiene hijo izquierdo, el sucesor es el propio 93; se copia su valor a la
+posición de 87 y se elimina el 93 original (que ahora quedó duplicado).
+
+```mermaid
+graph TD
+    n120((120)) --- n93((93))
+    n120 --- n140((140))
+    n93 --- n43((43))
+    n140 --- n130((130))
+    n43 --- n65((65))
+    n130 --- n135((135))
+    n43 --- n56((56))
+
+    style n93 fill:#f5a742,color:#fff
+```
+
+> Nota: el 56, que colgaba de 93, ahora es hijo izquierdo del 43 (era el
+> único descendiente restante del antiguo subárbol derecho de 43,
+> reacomodado según la regla ABB — menor que 65, mayor que 43).
+
+### Paso 4 — Eliminar 120 (la raíz)
+
+El 120 también tiene **dos hijos** (93 y 140). Se busca el sucesor: el
+valor más pequeño del subárbol derecho, que es 130. Como 130 sí tiene un
+hijo (135), primero se reacomoda ese hijo antes de mover 130 a la raíz.
+
+```mermaid
+graph TD
+    n130((130)) --- n93((93))
+    n130 --- n140((140))
+    n93 --- n43((43))
+    n140 --- n135((135))
+    n43 --- n65((65))
+    n43 --- n56((56))
+
+    style n130 fill:#6fcf7f,color:#fff
+```
+
+**Árbol final** tras las 4 eliminaciones.
+
+---
+
+## 11. Factor de equilibrio (FE) y árboles AVL
+
+**Definición:** el factor de equilibrio de un nodo $T$ se calcula como
+la altura de su subárbol derecho menos la altura de su subárbol
+izquierdo:
+
+$$FE = H_{SD} - H_{SI}$$
+
+Un árbol **AVL** exige que $FE \in \{-1, 0, 1\}$ en **todos** sus nodos;
+si alguno se sale de ese rango, hay que **rotar** para volver a
+equilibrarlo.
+
+### Regla de oro de la inserción
+
+Cada vez que llega un número nuevo, se compara desde la raíz:
+
+- Si es **menor**, se camina hacia la **izquierda**.
+- Si es **mayor**, se camina hacia la **derecha**.
+
+Se repite en cada nodo hasta encontrar un lugar vacío, donde se inserta.
+
+### Las 4 rotaciones
+
+#### 11.1 Rotación simple a la derecha (caso Izquierda-Izquierda)
+
+**Cuándo ocurre:** el desbalance viene de agregar un nodo en el subárbol
+izquierdo del hijo izquierdo — los tres nodos forman una línea recta
+hacia la izquierda.
+
+```mermaid
+graph TD
+    subgraph Antes["ANTES — desbalanceado"]
+        a1(("30 [FE=-2]")) --- a2(("20 [FE=-1]"))
+        a2 --- a3(("10 [FE=0]"))
+    end
+```
+
+```mermaid
+graph TD
+    subgraph Después["DESPUÉS — balanceado"]
+        b1(("20 [FE=0]")) --- b2(("10 [FE=0]"))
+        b1 --- b3(("30 [FE=0]"))
+    end
+```
+
+El nodo del medio (20) sube a ocupar el puesto del padre, y el padre
+(30) baja para convertirse en su hijo derecho.
+
+#### 11.2 Rotación simple a la izquierda (caso Derecha-Derecha)
+
+**Cuándo ocurre:** el desbalance viene de agregar un nodo en el
+subárbol derecho del hijo derecho — línea recta hacia la derecha.
+
+```mermaid
+graph TD
+    subgraph Antes2["ANTES — desbalanceado"]
+        c1(("10 [FE=+2]")) --- c2(("20 [FE=+1]"))
+        c2 --- c3(("30 [FE=0]"))
+    end
+```
+
+```mermaid
+graph TD
+    subgraph Después2["DESPUÉS — balanceado"]
+        d1(("20 [FE=0]")) --- d2(("10 [FE=0]"))
+        d1 --- d3(("30 [FE=0]"))
+    end
+```
+
+Mismo principio que la anterior, mirado en espejo: el nodo del medio
+(20) sube, y el padre (10) baja como hijo izquierdo.
+
+#### 11.3 Rotación doble Izquierda-Derecha (caso ID)
+
+**Cuándo ocurre:** un "zigzag" — primero hacia la izquierda y luego
+hacia la derecha (ej. $30 \to 10 \to 20$).
+
+```mermaid
+graph TD
+    subgraph Antes3["ANTES — desbalanceado (zigzag)"]
+        e1(("30 [FE=-2]")) --- e2(("10 [FE=+1]"))
+        e2 --- e3(("20 [FE=0]"))
+    end
+```
+
+```mermaid
+graph TD
+    subgraph Después3["DESPUÉS — balanceado"]
+        f1(("20 [FE=0]")) --- f2(("10 [FE=0]"))
+        f1 --- f3(("30 [FE=0]"))
+    end
+```
+
+**Movimiento en 2 pasos:** primero el 20 sube y el 10 baja (para
+estirarlo a línea recta), y luego el 20 vuelve a subir mientras el 30
+baja. El "nieto" (20) termina siendo la nueva raíz del subárbol.
+
+#### 11.4 Rotación doble Derecha-Izquierda (caso DI)
+
+**Cuándo ocurre:** zigzag en sentido contrario — primero a la derecha y
+luego a la izquierda (ej. $10 \to 30 \to 20$).
+
+```mermaid
+graph TD
+    subgraph Antes4["ANTES — desbalanceado (zigzag)"]
+        g1(("10 [FE=+2]")) --- g2(("30 [FE=-1]"))
+        g2 --- g3(("20 [FE=0]"))
+    end
+```
+
+```mermaid
+graph TD
+    subgraph Después4["DESPUÉS — balanceado"]
+        h1(("20 [FE=0]")) --- h2(("10 [FE=0]"))
+        h1 --- h3(("30 [FE=0]"))
+    end
+```
+
+Igual que el caso anterior mirado en espejo: el "nieto" (20) termina
+siendo la nueva raíz, con 10 a su izquierda y 30 a su derecha.
+
+---
+
+## 12. Ejercicio integrador
+
+**Enunciado:**
+a) Crear un ABB con las etiquetas 35, 40, 20, 15.
+b) Insertar 9.
+c) Calcular el factor de equilibrio en cada nodo.
+d) Equilibrar el árbol con la rotación que corresponda.
+e) Calcular el factor de equilibrio del árbol resultante.
+
+### a) Construcción del ABB
+
+Insertando en orden (35 es la raíz; 40 es mayor → derecha; 20 es menor →
+izquierda; 15 es menor que 35 y menor que 20 → izquierda de 20):
+
+```mermaid
+graph TD
+    n35((35)) --- n20((20))
+    n35 --- n40((40))
+    n20 --- n15((15))
+```
+
+### b) Insertar 9
+
+$9 < 35$, $9 < 20$, $9 < 15$ → queda como hijo izquierdo de 15:
+
+```mermaid
+graph TD
+    n35((35)) --- n20((20))
+    n35 --- n40((40))
+    n20 --- n15((15))
+    n15 --- n9((9))
+
+    style n35 fill:#e0645c,color:#fff
+```
+
+### c) Factor de equilibrio (antes de rotar)
+
+| Nodo | $H_{SI}$ | $H_{SD}$ | $FE = H_{SD}-H_{SI}$ |
+|---|---|---|---|
+| 9 | −1 (vacío) | −1 (vacío) | 0 |
+| 15 | 0 (nodo 9) | −1 (vacío) | −1 |
+| 20 | 1 (subárbol 15-9) | −1 (vacío) | −2 ⚠️ |
+| 40 | −1 | −1 | 0 |
+| **35** | 2 (subárbol 20-15-9) | 0 (nodo 40) | **−2 ⚠️** |
+
+Los nodos **20** y **35** están desbalanceados ($|FE|>1$). Como el
+desequilibrio viene de una cadena recta hacia la izquierda
+($35\to20\to15\to9$), es un caso **Izquierda-Izquierda**.
+
+### d) Equilibrar con rotación simple a la derecha
+
+> **Aclaración:** por el desequilibrio detectado (Izquierda-Izquierda,
+> $FE=-2$ en el nodo 35), la rotación que corrige esto técnicamente es
+> una **rotación simple a la derecha** sobre 35 (no "a la izquierda").
+> Se aplica sobre el nodo más alto desbalanceado:
+
+```mermaid
+graph TD
+    n20((20)) --- n15((15))
+    n20 --- n35((35))
+    n15 --- n9((9))
+    n35 --- n40((40))
+
+    style n20 fill:#6fcf7f,color:#fff
+```
+
+$20$ sube a ocupar la raíz del subárbol, $35$ baja para ser su hijo
+derecho (conservando a $40$ como su propio hijo derecho), y $15$ (con su
+hijo $9$) se queda como hijo izquierdo de $20$.
+
+### e) Factor de equilibrio del árbol resultante
+
+| Nodo | $H_{SI}$ | $H_{SD}$ | $FE$ |
+|---|---|---|---|
+| 9 | −1 | −1 | 0 |
+| 40 | −1 | −1 | 0 |
+| 15 | 0 (nodo 9) | −1 | −1 |
+| 35 | −1 | 0 (nodo 40) | 1 |
+| **20** | 1 (subárbol 15-9) | 1 (subárbol 35-40) | **0** ✅ |
+
+Todos los nodos quedan con $FE \in \{-1,0,1\}$: **el árbol ya es AVL
+válido**.
