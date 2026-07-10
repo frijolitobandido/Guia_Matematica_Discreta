@@ -34,7 +34,7 @@ Se lee **de derecha a izquierda**. Al encontrar un operador, se desapilan dos
 valores: el primero que sale es el operando **izquierdo**, el segundo el
 **derecho**.
 
-## 5.4 Convertir de infijo a postfijo usando una pila (algoritmo shunting-yard)
+## 5.4 Convertir de infijo a postfijo usando una pila 
 
 **Para reforzar:** este procedimiento se conoce formalmente como el
 **algoritmo shunting-yard** (patio de maniobras), inventado por Edsger
@@ -75,11 +75,6 @@ suma/resta (`+`, `-`).
 
 **Ejemplo:** `A+(B*C-(D/E^f)*g)*H` → `A B C * D E f ^ / g * - H * +`
 
-**Para reforzar — el manejo de paréntesis:** el material original no
-detalla explícitamente la regla de los paréntesis, que es esencial: un `(`
-siempre se apila sin comparar prioridades (actúa como una "barrera" de
-prioridad mínima), y al llegar a un `)` se van sacando operadores hasta
-toparse con el `(` que le corresponde, el cual se descarta sin escribirse en
-la salida.
+
 
 
