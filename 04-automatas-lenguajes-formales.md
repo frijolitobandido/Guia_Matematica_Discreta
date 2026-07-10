@@ -887,13 +887,4 @@ quedarse flotando en el vacío.
 
 ---
 
-## Lo que quedó fuera (y por qué)
 
-Dos ejercicios del PDF original quedaron intencionalmente fuera de este
-documento por ser bocetos a mano con símbolos difíciles de distinguir
-con certeza (las reglas $S\to bB, B\to cC,\dots$ de la sección 9, y
-parte del autómata racional original de la sección 10). En ambos casos
-expliqué el **concepto** con un ejemplo propio equivalente y claro, en
-vez de arriesgarme a transcribir mal un trazo ambiguo. Si me pasas una
-foto más nítida de esas dos partes, las resuelvo con el mismo nivel de
-detalle que el resto.
