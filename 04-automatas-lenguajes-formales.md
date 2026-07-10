@@ -1,12 +1,6 @@
 # Autómatas y lenguajes formales — Guía a detalle
 
-> Cubre: máquinas de estado finito (DFA/NFA), conversión NFA→DFA por
-> subconjuntos, gramáticas de estructura de frase, la jerarquía de
-> Chomsky, ambigüedad, operaciones sobre lenguajes (unión, complemento,
-> intersección), autómatas de pila y máquina de Turing. Donde el PDF
-> traía diagramas a mano poco claros o inconsistentes, aquí quedan
-> reconstruidos limpios y explicados — y donde de verdad era ilegible, lo
-> aviso en vez de adivinar.
+INCOMPLETO
 
 ---
 
