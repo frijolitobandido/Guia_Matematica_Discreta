@@ -464,7 +464,7 @@ circuito.
 **Enunciado:** si $A$ es la matriz de adyacencia de una gráfica (con aristas
 múltiples y lazos permitidos), entonces el número de **trayectorias
 diferentes de longitud $r$** de $V_i$ a $V_j$ es igual a la entrada
-$i$–$j$-ésima de la matriz $A^r$ (la matriz $A$ multiplicada por sí misma
+$i$–j-ésima de la matriz $A^r$ (la matriz $A$ multiplicada por sí misma
 $r$ veces).
 
 ### Ejemplo — grafo no dirigido
