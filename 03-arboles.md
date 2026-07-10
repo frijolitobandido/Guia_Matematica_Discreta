@@ -575,12 +575,13 @@ desequilibrio viene de su hijo derecho — línea recta hacia la derecha.
 
 ```mermaid
 graph TD
-    c1(("A [FE=+2]")) --- c2(("B [FE=+1]"))
-    sp1(( )):::invisible ~~~ c1
-    sp2(( )):::invisible ~~~ c2
+    c1(("A [FE=+2]")) --- sp1[" "]:::invis
+    c1 --- c2(("B [FE=+1]"))
+    c2 --- sp2[" "]:::invis
     c2 --- c3(("C [FE=0]"))
 
-    classDef invisible fill:none,stroke:none
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 0,2 stroke:none;
 ```
 
 **DESPUÉS — balanceado:**
@@ -599,10 +600,11 @@ graph TD
     g1 --- g3(("70 [FE=+1]"))
     g3 --- g4(("60 [FE=0]"))
     g3 --- g5(("80 [FE=+1]"))
-    sp1(( )):::invisible ~~~ g5
+    g5 --- sp1[" "]:::invis
     g5 --- g6(("90 [FE=0]"))
 
-    classDef invisible fill:none,stroke:none
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 4 stroke:none;
 ```
 
 Se detecta $FE=+2$ en la raíz (50): su hijo derecho (70) también está
@@ -619,7 +621,11 @@ graph TD
     h1 --- h3(("80 [FE=+1]"))
     h2 --- h4(("30 [FE=0]"))
     h2 --- h5(("60 [FE=0]"))
-    h3 --- h6(("90 [FE=0]"))
+    h3 --- h6[" "]:::invis
+    h3 --- h7(("90 [FE=0]"))
+
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 4 stroke:none;
 ```
 
 *(60 "viaja" de ser hijo izquierdo de 70 a ser hijo derecho de 50 — la
@@ -641,24 +647,38 @@ hacia la **derecha** (signos de FE contrarios entre padre e hijo).
 
 **Diagrama genérico:**
 
-**ANTES — desbalanceado (zigzag: primero izquierda, luego derecha):**
+**ESTADO 1: ANTES (Zigzag desbalanceado: primero izquierda, luego derecha):**
 
 ```mermaid
 graph TD
-    e1(("A [FE=-2]")) --- e2(("B [FE=+1]"))
-    e1 ~~~ sp1(( )):::invisible
-    sp2(( )):::invisible ~~~ e2
-    e2 --- e3(("C [FE=0]"))
+    A(("A [FE=-2]")) --- B(("B [FE=+1]"))
+    A --- sp1[" "]:::invis
+    B --- sp2[" "]:::invis
+    B --- C(("C [FE=0]"))
 
-    classDef invisible fill:none,stroke:none
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 1,2 stroke:none;
+```
+**ESTADO 2: INTERMEDIO (Tras rotación simple izquierda sobre B):**
+
+```mermaid
+graph TD
+    A1(("A [FE=-2]")) --- C1(("C [FE=-1]"))
+    A1 --- sp1[" "]:::invis
+    C1 --- B1(("B [FE=0]"))
+    C1 --- sp2[" "]:::invis
+
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 1,3 stroke:none;
 ```
 
-**DESPUÉS — balanceado:**
+
+**ESTADO 3: DESPUÉS (Tras rotación simple derecha sobre A):**
 
 ```mermaid
 graph TD
-    f1(("C [FE=0]")) --- f2(("B [FE=0]"))
-    f1 --- f3(("A [FE=0]"))
+    C2(("C [FE=0]")) --- B2(("B [FE=0]"))
+    C2 --- A2(("A [FE=0]"))
 ```
 
 **Ejemplo — insertando 50, 20, 70, 10, 30, 25 en ese orden:**
@@ -675,9 +695,10 @@ graph TD
     i2 --- i4(("10 [FE=0]"))
     i2 --- i5(("30 [FE=-1]"))
     i5 --- i6(("25 [FE=0]"))
-    sp1(( )):::invisible ~~~ i5
+    i5 --- sp1[" "]:::invis
 
-    classDef invisible fill:none,stroke:none
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 5 stroke:none;
 ```
 
 $FE=-2$ en 50, con su hijo izquierdo (20) en $FE=+1$ (signo contrario) →
@@ -717,25 +738,38 @@ está cargado hacia la **izquierda**.
 
 **Diagrama genérico:**
 
-**ANTES — desbalanceado (zigzag: primero derecha, luego izquierda):**
+**ESTADO 1: ANTES (Zigzag desbalanceado: primero derecha, luego izquierda):**
 
 ```mermaid
 graph TD
-    g1(("A [FE=+2]")) --- sp1[" "]:::invis
-    g1 --- g2(("B [FE=-1]"))
-    g2 --- g3(("C [FE=0]"))
-    g2 --- sp2[" "]:::invis
+    A(("A [FE=+2]")) --- sp1[" "]:::invis
+    A --- B(("B [FE=-1]"))
+    B --- C(("C [FE=0]"))
+    B --- sp2[" "]:::invis
 
     classDef invis fill:none,stroke:none,color:none
     linkStyle 0,3 stroke:none;
 ```
-
-**DESPUÉS — balanceado:**
+**ESTADO 2: INTERMEDIO (Tras rotación simple derecha sobre B):**
 
 ```mermaid
 graph TD
-    h1(("C [FE=0]")) --- h2(("A [FE=0]"))
-    h1 --- h3(("B [FE=0]"))
+    A1(("A [FE=+2]")) --- sp1[" "]:::invis
+    A1 --- C1(("C [FE=+1]"))
+    C1 --- sp2[" "]:::invis
+    C1 --- B1(("B [FE=0]"))
+
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 0,2 stroke:none;
+```
+
+
+**ESTADO 3: DESPUÉS (Tras rotación simple izquierda sobre A):**
+
+```mermaid
+graph TD
+    C2(("C [FE=0]")) --- A2(("A [FE=0]"))
+    C2 --- B2(("B [FE=0]"))
 ```
 
 **Ejemplo — insertando 50, 80, 20, 90, 70, 75 en ese orden:**
