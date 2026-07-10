@@ -855,9 +855,21 @@ izquierda; 15 es menor que 35 y menor que 20 → izquierda de 20):
 
 ```mermaid
 graph TD
-    n35((35)) --- n20((20))
-    n35 --- n40((40))
-    n20 --- n15((15))
+    35((35)) --- 20((20))
+    35 --- 40((40))
+```
+
+El elemento 15 es menor que 35 y menor que 20, por lo que se ubica como hijo izquierdo de 20. Añadimos un nodo fantasma a la derecha de 20 para evitar que el 15 quede centrado.
+
+```mermaid
+graph TD
+    35((35)) --- 20((20))
+    35 --- 40((40))
+    20 --- 15((15))
+    20 --- sp1[" "]:::invis
+
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 3 stroke:none;
 ```
 
 ### b) Insertar 9
@@ -866,12 +878,15 @@ $9 < 35$, $9 < 20$, $9 < 15$ → queda como hijo izquierdo de 15:
 
 ```mermaid
 graph TD
-    n35((35)) --- n20((20))
-    n35 --- n40((40))
-    n20 --- n15((15))
-    n15 --- n9((9))
+    35((35)) --- 20((20))
+    35 --- 40((40))
+    20 --- 15((15))
+    20 --- sp1[" "]:::invis
+    15 --- 9((9))
+    15 --- sp2[" "]:::invis
 
-    style n35 fill:#e0645c,color:#fff
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 3,5 stroke:none;
 ```
 
 ### c) Factor de equilibrio (antes de rotar)
@@ -880,9 +895,9 @@ graph TD
 |---|---|---|---|
 | 9 | −1 (vacío) | −1 (vacío) | 0 |
 | 15 | 0 (nodo 9) | −1 (vacío) | −1 |
-| 20 | 1 (subárbol 15-9) | −1 (vacío) | −2 ⚠️ |
+| 20 | 1 (subárbol 15-9) | −1 (vacío) | −2  |
 | 40 | −1 | −1 | 0 |
-| **35** | 2 (subárbol 20-15-9) | 0 (nodo 40) | **−2 ⚠️** |
+| **35** | 2 (subárbol 20-15-9) | 0 (nodo 40) | **−2 ** |
 
 Los nodos **20** y **35** están desbalanceados ($|FE|>1$). Como el
 desequilibrio viene de una cadena recta hacia la izquierda
@@ -897,12 +912,15 @@ desequilibrio viene de una cadena recta hacia la izquierda
 
 ```mermaid
 graph TD
-    n20((20)) --- n15((15))
-    n20 --- n35((35))
-    n15 --- n9((9))
-    n35 --- n40((40))
+    20((20)) --- 15((15))
+    20 --- 35((35))
+    15 --- 9((9))
+    15 --- sp1[" "]:::invis
+    35 --- sp2[" "]:::invis
+    35 --- 40((40))
 
-    style n20 fill:#6fcf7f,color:#fff
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 3,4 stroke:none;
 ```
 
 $20$ sube a ocupar la raíz del subárbol, $35$ baja para ser su hijo
@@ -917,7 +935,7 @@ hijo $9$) se queda como hijo izquierdo de $20$.
 | 40 | −1 | −1 | 0 |
 | 15 | 0 (nodo 9) | −1 | −1 |
 | 35 | −1 | 0 (nodo 40) | 1 |
-| **20** | 1 (subárbol 15-9) | 1 (subárbol 35-40) | **0** ✅ |
+| **20** | 1 (subárbol 15-9) | 1 (subárbol 35-40) | **0**  |
 
 Todos los nodos quedan con $FE \in \{-1,0,1\}$: **el árbol ya es AVL
 válido**.
