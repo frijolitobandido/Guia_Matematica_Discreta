@@ -97,7 +97,7 @@ $$n = i + l$$
 
 **Caso base ($i=0$):** cero nodos internos significa que ningún nodo
 tiene hijos → el árbol es un solo nodo aislado (la raíz). Entonces
-$|V|=1$. Evaluando la fórmula: $|V| = m\cdot(0)+1 = 1$.  Coincide.
+$|V|=1$. Evaluando la fórmula: $|V| = m\cdot(0)+1 = 1$. ✅ Coincide.
 
 **Hipótesis inductiva:** se asume que la fórmula es válida para
 cualquier árbol $m$-ario completo con exactamente $k$ nodos internos:
@@ -503,40 +503,59 @@ izquierda) — los tres nodos forman una línea recta hacia la izquierda.
 
 **Diagrama genérico:**
 
-**ANTES — desbalanceado:**
+**ANTES — desbalanceado (inclinado a la izquierda):**
 
 ```mermaid
 graph TD
-    a1(("30 [FE=-2]")) --- a2(("20 [FE=-1]"))
-    a2 --- a3(("10 [FE=0]"))
+    a1(("A [FE=-2]")) --- a2(("B [FE=-1]"))
+    a1 ~~~ sp1(( )):::invisible
+    a2 --- a3(("C [FE=0]"))
+    a2 ~~~ sp2(( )):::invisible
+
+    classDef invisible fill:none,stroke:none
 ```
 
 **DESPUÉS — balanceado:**
 
 ```mermaid
 graph TD
-    b1(("20 [FE=0]")) --- b2(("10 [FE=0]"))
-    b1 --- b3(("30 [FE=0]"))
+    b1(("B [FE=0]")) --- b2(("C [FE=0]"))
+    b1 --- b3(("A [FE=0]"))
 ```
 
-**Ejemplo — insertando 50, 40, 30 en ese orden:**
+**Ejemplo — insertando 50, 30, 70, 20, 40, 10 en ese orden:**
 
 ```mermaid
 graph TD
-    e1(("50 [FE=-2]")) --- e2(("40 [FE=-1]"))
-    e2 --- e3(("30 [FE=0]"))
+    e1(("50 [FE=-2]")) --- e2(("30 [FE=-1]"))
+    e1 --- e3(("70 [FE=0]"))
+    e2 --- e4(("20 [FE=-1]"))
+    e2 --- e5(("40 [FE=0]"))
+    e4 --- e6(("10 [FE=0]"))
+    e4 ~~~ sp1(( )):::invisible
+
+    classDef invisible fill:none,stroke:none
 ```
 
-Se detecta $FE=-2$ en la raíz (50), con la cadena $50\to40\to30$ en
-línea recta hacia la izquierda → caso Izquierda-Izquierda. Se rota a la
-derecha sobre 50: **40** sube a la raíz, **50** baja como su hijo
-derecho, y **30** se queda como hijo izquierdo de 40:
+Se detecta $FE=-2$ en la raíz (50): su hijo izquierdo (30) también está
+cargado a la izquierda, y a su vez el hijo izquierdo de 30 (20) también
+— la cadena $50\to30\to20\to10$ (marcada hacia la izquierda) confirma el
+caso Izquierda-Izquierda. Se rota a la derecha sobre 50: **30** sube a
+la raíz, **50** baja como su hijo derecho, y el hijo derecho que 30 ya
+tenía (**40**) se reubica como el nuevo hijo **izquierdo** de 50 (porque
+$30<40<50$, ahí es donde le corresponde por la regla del ABB):
 
 ```mermaid
 graph TD
-    f1(("40 [FE=0]")) --- f2(("30 [FE=0]"))
+    f1(("30 [FE=0]")) --- f2(("20 [FE=-1]"))
     f1 --- f3(("50 [FE=0]"))
+    f2 --- f4(("10 [FE=0]"))
+    f3 --- f5(("40 [FE=0]"))
+    f3 --- f6(("70 [FE=0]"))
 ```
+
+*(fíjate cómo 40 "viaja" de ser hijo derecho de 30 a ser hijo izquierdo
+de 50 — ese es el detalle que no se ve en el ejemplo mínimo de 3 nodos)*
 
 #### 11.2 Rotación simple a la izquierda (caso Derecha-Derecha)
 
@@ -552,40 +571,59 @@ desequilibrio viene de su hijo derecho — línea recta hacia la derecha.
 
 **Diagrama genérico:**
 
-**ANTES — desbalanceado:**
+**ANTES — desbalanceado (inclinado a la derecha):**
 
 ```mermaid
 graph TD
-    c1(("10 [FE=+2]")) --- c2(("20 [FE=+1]"))
-    c2 --- c3(("30 [FE=0]"))
+    c1(("A [FE=+2]")) --- c2(("B [FE=+1]"))
+    sp1(( )):::invisible ~~~ c1
+    sp2(( )):::invisible ~~~ c2
+    c2 --- c3(("C [FE=0]"))
+
+    classDef invisible fill:none,stroke:none
 ```
 
 **DESPUÉS — balanceado:**
 
 ```mermaid
 graph TD
-    d1(("20 [FE=0]")) --- d2(("10 [FE=0]"))
-    d1 --- d3(("30 [FE=0]"))
+    d1(("B [FE=0]")) --- d2(("A [FE=0]"))
+    d1 --- d3(("C [FE=0]"))
 ```
 
-**Ejemplo — insertando 10, 20, 30 en ese orden:**
+**Ejemplo — insertando 50, 70, 30, 80, 60, 90 en ese orden:**
 
 ```mermaid
 graph TD
-    g1(("10 [FE=+2]")) --- g2(("20 [FE=+1]"))
-    g2 --- g3(("30 [FE=0]"))
+    g1(("50 [FE=+2]")) --- g2(("30 [FE=0]"))
+    g1 --- g3(("70 [FE=+1]"))
+    g3 --- g4(("60 [FE=0]"))
+    g3 --- g5(("80 [FE=+1]"))
+    sp1(( )):::invisible ~~~ g5
+    g5 --- g6(("90 [FE=0]"))
+
+    classDef invisible fill:none,stroke:none
 ```
 
-Se detecta $FE=+2$ en la raíz (10), con la cadena $10\to20\to30$ en
-línea recta hacia la derecha → caso Derecha-Derecha. Se rota a la
-izquierda sobre 10: **20** sube a la raíz, **10** baja como su hijo
-izquierdo, y **30** se queda como hijo derecho de 20:
+Se detecta $FE=+2$ en la raíz (50): su hijo derecho (70) también está
+cargado a la derecha, y a su vez el hijo derecho de 70 (80) también — la
+cadena $50\to70\to80\to90$ (marcada hacia la derecha) confirma el caso
+Derecha-Derecha. Se rota a la izquierda sobre 50: **70** sube a la
+raíz, **50** baja como su hijo izquierdo, y el hijo izquierdo que 70 ya
+tenía (**60**) se reubica como el nuevo hijo **derecho** de 50 (porque
+$50<60<70$):
 
 ```mermaid
 graph TD
-    h1(("20 [FE=0]")) --- h2(("10 [FE=0]"))
-    h1 --- h3(("30 [FE=0]"))
+    h1(("70 [FE=0]")) --- h2(("50 [FE=0]"))
+    h1 --- h3(("80 [FE=+1]"))
+    h2 --- h4(("30 [FE=0]"))
+    h2 --- h5(("60 [FE=0]"))
+    h3 --- h6(("90 [FE=0]"))
 ```
+
+*(60 "viaja" de ser hijo izquierdo de 70 a ser hijo derecho de 50 — la
+misma idea que en el caso anterior, en espejo)*
 
 #### 11.3 Rotación doble Izquierda-Derecha (caso ID)
 
@@ -603,45 +641,65 @@ hacia la **derecha** (signos de FE contrarios entre padre e hijo).
 
 **Diagrama genérico:**
 
-**ANTES — desbalanceado (zigzag):**
+**ANTES — desbalanceado (zigzag: primero izquierda, luego derecha):**
 
 ```mermaid
 graph TD
-    e1(("30 [FE=-2]")) --- e2(("10 [FE=+1]"))
-    e2 --- e3(("20 [FE=0]"))
+    e1(("A [FE=-2]")) --- e2(("B [FE=+1]"))
+    e1 ~~~ sp1(( )):::invisible
+    sp2(( )):::invisible ~~~ e2
+    e2 --- e3(("C [FE=0]"))
+
+    classDef invisible fill:none,stroke:none
 ```
 
 **DESPUÉS — balanceado:**
 
 ```mermaid
 graph TD
-    f1(("20 [FE=0]")) --- f2(("10 [FE=0]"))
-    f1 --- f3(("30 [FE=0]"))
+    f1(("C [FE=0]")) --- f2(("B [FE=0]"))
+    f1 --- f3(("A [FE=0]"))
 ```
 
-**Ejemplo — insertando 50, 20, 30 en ese orden:**
+**Ejemplo — insertando 50, 20, 70, 10, 30, 25 en ese orden:**
 
-$50$ es la raíz; $20<50$ va a su izquierda; $30$ es mayor que $20$ pero
-menor que $50$, así que entra como hijo **derecho** de 20 — ahí nace el
-zigzag:
+$25$ es el que dispara el desbalance: entra como hijo izquierdo de 30,
+haciendo que 20 (que ya tenía a 10 como hijo izquierdo y a 30 como hijo
+derecho) quede cargado hacia la derecha — el zigzag que necesita doble
+rotación:
 
 ```mermaid
 graph TD
     i1(("50 [FE=-2]")) --- i2(("20 [FE=+1]"))
-    i2 --- i3(("30 [FE=0]"))
+    i1 --- i3(("70 [FE=0]"))
+    i2 --- i4(("10 [FE=0]"))
+    i2 --- i5(("30 [FE=-1]"))
+    i5 --- i6(("25 [FE=0]"))
+    sp1(( )):::invisible ~~~ i5
+
+    classDef invisible fill:none,stroke:none
 ```
 
-$FE=-2$ en 50, con el hijo izquierdo (20) cargado hacia la derecha →
+$FE=-2$ en 50, con su hijo izquierdo (20) en $FE=+1$ (signo contrario) →
 caso Izquierda-Derecha. **Paso 1** (rotación simple izquierda sobre 20):
-30 sube y 20 baja como su hijo izquierdo. **Paso 2** (rotación simple
-derecha sobre 50): 30 sube a la raíz, 50 baja como su hijo derecho, y 20
-queda como su hijo izquierdo:
+30 sube, 20 baja como su hijo izquierdo, y el hijo izquierdo que 30 ya
+tenía (**25**) se reubica como el nuevo hijo **derecho** de 20. **Paso
+2** (rotación simple derecha sobre 50): 30 sube a la raíz del subárbol,
+50 baja como su hijo derecho, y 20 (con sus dos hijos ya acomodados)
+queda como hijo izquierdo:
 
 ```mermaid
 graph TD
     j1(("30 [FE=0]")) --- j2(("20 [FE=0]"))
-    j1 --- j3(("50 [FE=0]"))
+    j1 --- j3(("50 [FE=+1]"))
+    j2 --- j4(("10 [FE=0]"))
+    j2 --- j5(("25 [FE=0]"))
+    j3 --- j6(("70 [FE=0]"))
 ```
+
+*(el detalle clave que el ejemplo mínimo no muestra: 25 no desaparece ni
+se queda "flotando" — se reubica como hijo derecho de 20 en el primer
+paso, y ahí se queda)*
 
 #### 11.4 Rotación doble Derecha-Izquierda (caso DI)
 
@@ -659,44 +717,65 @@ está cargado hacia la **izquierda**.
 
 **Diagrama genérico:**
 
-**ANTES — desbalanceado (zigzag):**
+**ANTES — desbalanceado (zigzag: primero derecha, luego izquierda):**
 
 ```mermaid
 graph TD
-    g1(("10 [FE=+2]")) --- g2(("30 [FE=-1]"))
-    g2 --- g3(("20 [FE=0]"))
+    g1(("A [FE=+2]")) --- sp1[" "]:::invis
+    g1 --- g2(("B [FE=-1]"))
+    g2 --- g3(("C [FE=0]"))
+    g2 --- sp2[" "]:::invis
+
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 0,3 stroke:none;
 ```
 
 **DESPUÉS — balanceado:**
 
 ```mermaid
 graph TD
-    h1(("20 [FE=0]")) --- h2(("10 [FE=0]"))
-    h1 --- h3(("30 [FE=0]"))
+    h1(("C [FE=0]")) --- h2(("A [FE=0]"))
+    h1 --- h3(("B [FE=0]"))
 ```
 
-**Ejemplo — insertando 20, 50, 30 en ese orden:**
+**Ejemplo — insertando 50, 80, 20, 90, 70, 75 en ese orden:**
 
-$20$ es la raíz; $50>20$ va a su derecha; $30$ es mayor que $20$ pero
-menor que $50$, así que entra como hijo **izquierdo** de 50 — zigzag:
+$75$ es el que dispara el desbalance: entra como hijo derecho de 70,
+haciendo que 80 (que ya tenía a 70 como hijo izquierdo y a 90 como hijo
+derecho) quede cargado hacia la izquierda — zigzag en espejo del caso
+anterior:
 
 ```mermaid
 graph TD
-    k1(("20 [FE=+2]")) --- k2(("50 [FE=-1]"))
-    k2 --- k3(("30 [FE=0]"))
+    k1(("50 [FE=+2]")) --- k2(("20 [FE=0]"))
+    k1 --- k3(("80 [FE=-1]"))
+    k3 --- k4(("70 [FE=+1]"))
+    k3 --- k5(("90 [FE=0]"))
+    k4 --- k6(("75 [FE=0]"))
+    k4 ~~~ sp1(( )):::invisible
+
+    classDef invisible fill:none,stroke:none
 ```
 
-$FE=+2$ en 20, con el hijo derecho (50) cargado hacia la izquierda →
-caso Derecha-Izquierda. **Paso 1** (rotación simple derecha sobre 50):
-30 sube y 50 baja como su hijo derecho. **Paso 2** (rotación simple
-izquierda sobre 20): 30 sube a la raíz, 20 baja como su hijo izquierdo,
-y 50 queda como su hijo derecho:
+$FE=+2$ en 50, con su hijo derecho (80) en $FE=-1$ (signo contrario) →
+caso Derecha-Izquierda. **Paso 1** (rotación simple derecha sobre 80):
+70 sube, 80 baja como su hijo derecho, y el hijo derecho que 70 ya tenía
+(**75**) se reubica como el nuevo hijo **izquierdo** de 80. **Paso 2**
+(rotación simple izquierda sobre 50): 70 sube a la raíz del subárbol, 50
+baja como su hijo izquierdo, y 80 (con sus dos hijos ya acomodados)
+queda como hijo derecho:
 
 ```mermaid
 graph TD
-    l1(("30 [FE=0]")) --- l2(("20 [FE=0]"))
-    l1 --- l3(("50 [FE=0]"))
+    l1(("70 [FE=0]")) --- l2(("50 [FE=-1]"))
+    l1 --- l3(("80 [FE=0]"))
+    l2 --- l4(("20 [FE=0]"))
+    l3 --- l5(("75 [FE=0]"))
+    l3 --- l6(("90 [FE=0]"))
 ```
+
+*(igual que en el caso anterior: 75 no se pierde, se reubica como hijo
+izquierdo de 80 en el primer paso)*
 
 ---
 
@@ -741,9 +820,9 @@ graph TD
 |---|---|---|---|
 | 9 | −1 (vacío) | −1 (vacío) | 0 |
 | 15 | 0 (nodo 9) | −1 (vacío) | −1 |
-| 20 | 1 (subárbol 15-9) | −1 (vacío) | −2  |
+| 20 | 1 (subárbol 15-9) | −1 (vacío) | −2 ⚠️ |
 | 40 | −1 | −1 | 0 |
-| **35** | 2 (subárbol 20-15-9) | 0 (nodo 40) | **−2 ** |
+| **35** | 2 (subárbol 20-15-9) | 0 (nodo 40) | **−2 ⚠️** |
 
 Los nodos **20** y **35** están desbalanceados ($|FE|>1$). Como el
 desequilibrio viene de una cadena recta hacia la izquierda
@@ -778,7 +857,7 @@ hijo $9$) se queda como hijo izquierdo de $20$.
 | 40 | −1 | −1 | 0 |
 | 15 | 0 (nodo 9) | −1 | −1 |
 | 35 | −1 | 0 (nodo 40) | 1 |
-| **20** | 1 (subárbol 15-9) | 1 (subárbol 35-40) | **0**  |
+| **20** | 1 (subárbol 15-9) | 1 (subárbol 35-40) | **0** ✅ |
 
 Todos los nodos quedan con $FE \in \{-1,0,1\}$: **el árbol ya es AVL
 válido**.
