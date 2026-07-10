@@ -1,5 +1,5 @@
 # 5. Notación y expresiones aritméticas
-
+Incompleto
 ## 5.1 Los tres tipos de notación
 
 | Notación | Posición del operador | Ejemplo |
@@ -82,11 +82,4 @@ prioridad mínima), y al llegar a un `)` se van sacando operadores hasta
 toparse con el `(` que le corresponde, el cual se descarta sin escribirse en
 la salida.
 
-## 5.5 ¿Por qué funciona esto?
 
-La notación postfija/prefija elimina la necesidad de paréntesis y de reglas
-de precedencia **en tiempo de evaluación**, porque el orden en que aparecen
-los operadores ya refleja el orden exacto en que deben aplicarse. Por eso es
-la representación interna que usan los compiladores e intérpretes para
-evaluar expresiones aritméticas de forma eficiente con una simple pila,
-en lugar de tener que analizar precedencia y paréntesis en cada evaluación.
