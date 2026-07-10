@@ -335,14 +335,18 @@ encontrar un espacio libre.
 
 ```mermaid
 graph TD
-    n18((18)) --- n23((23))
+    n18((18)) --- inv1[" "]:::invis
+    n18 --- n23((23))
     n23 --- n22((22))
     n23 --- n29((29))
     n22 --- n19((19))
+    n22 --- inv2[" "]:::invis
     n29 --- n24((24))
     n29 --- n31((31))
 
+    classDef invis fill:none,stroke:none,color:none
     style n18 fill:#3f78b5,color:#fff
+    linkStyle 0,5 stroke:none;
 ```
 
 > *(Nota: un ABB estándar no admite claves duplicadas; por eso esta
@@ -371,11 +375,18 @@ graph TD
     n87 --- n43((43))
     n87 --- n99((99))
     n140 --- n130((130))
+    n140 --- inv140[" "]:::invis
     n43 --- n22((22))
     n43 --- n65((65))
     n99 --- n93((93))
+    n99 --- inv99[" "]:::invis
+    n130 --- inv130[" "]:::invis
     n130 --- n135((135))
-    n93 --- n56((56))
+    n65 --- n56((56))
+    n65 --- inv65[" "]:::invis
+
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 5,9,10,13 stroke:none;
 ```
 
 ### Paso 1 — Eliminar 22
@@ -390,12 +401,19 @@ graph TD
     n87 --- n43((43))
     n87 --- n99((99))
     n140 --- n130((130))
+    n140 --- inv140[" "]:::invis
+    n43 --- inv43[" "]:::invis
     n43 --- n65((65))
     n99 --- n93((93))
+    n99 --- inv99[" "]:::invis
+    n130 --- inv130[" "]:::invis
     n130 --- n135((135))
-    n93 --- n56((56))
+    n65 --- n56((56))
+    n65 --- inv65[" "]:::invis
 
+    classDef invis fill:none,stroke:none,color:none
     style n43 fill:#f5a742,color:#fff
+    linkStyle 5,6,9,10,13 stroke:none;
 ```
 
 ### Paso 2 — Eliminar 99
@@ -410,11 +428,17 @@ graph TD
     n87 --- n43((43))
     n87 --- n93((93))
     n140 --- n130((130))
+    n140 --- inv140[" "]:::invis
+    n43 --- inv43[" "]:::invis
     n43 --- n65((65))
+    n130 --- inv130[" "]:::invis
     n130 --- n135((135))
-    n93 --- n56((56))
+    n65 --- n56((56))
+    n65 --- inv65[" "]:::invis
 
+    classDef invis fill:none,stroke:none,color:none
     style n87 fill:#f5a742,color:#fff
+    linkStyle 5,6,8,11 stroke:none;
 ```
 
 ### Paso 3 — Eliminar 87
@@ -429,12 +453,19 @@ graph TD
     n120((120)) --- n93((93))
     n120 --- n140((140))
     n93 --- n43((43))
+    n93 --- inv93[" "]:::invis
     n140 --- n130((130))
+    n140 --- inv140[" "]:::invis
+    n43 --- inv43[" "]:::invis
     n43 --- n65((65))
+    n130 --- inv130[" "]:::invis
     n130 --- n135((135))
-    n43 --- n56((56))
+    n65 --- n56((56))
+    n65 --- inv65[" "]:::invis
 
+    classDef invis fill:none,stroke:none,color:none
     style n93 fill:#f5a742,color:#fff
+    linkStyle 3,5,6,8,11 stroke:none;
 ```
 
 > Nota: el 56, que colgaba de 93, ahora es hijo izquierdo del 43 (era el
@@ -452,11 +483,17 @@ graph TD
     n130((130)) --- n93((93))
     n130 --- n140((140))
     n93 --- n43((43))
+    n93 --- inv93[" "]:::invis
     n140 --- n135((135))
+    n140 --- inv140[" "]:::invis
+    n43 --- inv43[" "]:::invis
     n43 --- n65((65))
-    n43 --- n56((56))
+    n65 --- n56((56))
+    n65 --- inv65[" "]:::invis
 
+    classDef invis fill:none,stroke:none,color:none
     style n130 fill:#6fcf7f,color:#fff
+    linkStyle 3,5,6,9 stroke:none;
 ```
 
 **Árbol final** tras las 4 eliminaciones.
