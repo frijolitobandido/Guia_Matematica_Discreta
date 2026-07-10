@@ -550,8 +550,12 @@ graph TD
     f1(("30 [FE=0]")) --- f2(("20 [FE=-1]"))
     f1 --- f3(("50 [FE=0]"))
     f2 --- f4(("10 [FE=0]"))
+    f2 --- sp1[" "]:::invis
     f3 --- f5(("40 [FE=0]"))
     f3 --- f6(("70 [FE=0]"))
+
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 3 stroke:none;
 ```
 
 *(fíjate cómo 40 "viaja" de ser hijo derecho de 30 a ser hijo izquierdo
@@ -683,10 +687,7 @@ graph TD
 
 **Ejemplo — insertando 50, 20, 70, 10, 30, 25 en ese orden:**
 
-$25$ es el que dispara el desbalance: entra como hijo izquierdo de 30,
-haciendo que 20 (que ya tenía a 10 como hijo izquierdo y a 30 como hijo
-derecho) quede cargado hacia la derecha — el zigzag que necesita doble
-rotación:
+1. ANTES (Zigzag en el nodo 20 y 30 con inserción de 25):
 
 ```mermaid
 graph TD
@@ -701,26 +702,39 @@ graph TD
     linkStyle 5 stroke:none;
 ```
 
-$FE=-2$ en 50, con su hijo izquierdo (20) en $FE=+1$ (signo contrario) →
-caso Izquierda-Derecha. **Paso 1** (rotación simple izquierda sobre 20):
-30 sube, 20 baja como su hijo izquierdo, y el hijo izquierdo que 30 ya
-tenía (**25**) se reubica como el nuevo hijo **derecho** de 20. **Paso
-2** (rotación simple derecha sobre 50): 30 sube a la raíz del subárbol,
-50 baja como su hijo derecho, y 20 (con sus dos hijos ya acomodados)
-queda como hijo izquierdo:
+2. INTERMEDIO (Rotación izquierda sobre 20, el nodo 30 sube y se alinea):
 
+```mermaid
+graph TD
+    int1(("50 [FE=-2]")) --- int2(("30 [FE=-1]"))
+    int1 --- int3(("70 [FE=0]"))
+    int2 --- int4(("20 [FE=0]"))
+    int2 --- sp1[" "]:::invis
+    int4 --- int5(("10 [FE=0]"))
+    int4 --- int6(("25 [FE=0]"))
+
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 3 stroke:none;
+```
+
+3. DESPUÉS (Rotación derecha sobre 50, el nodo 30 pasa a ser la nueva raíz):
+   
 ```mermaid
 graph TD
     j1(("30 [FE=0]")) --- j2(("20 [FE=0]"))
     j1 --- j3(("50 [FE=+1]"))
     j2 --- j4(("10 [FE=0]"))
     j2 --- j5(("25 [FE=0]"))
+    j3 --- sp1[" "]:::invis
     j3 --- j6(("70 [FE=0]"))
-```
 
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 4 stroke:none;
+```
 *(el detalle clave que el ejemplo mínimo no muestra: 25 no desaparece ni
-se queda "flotando" — se reubica como hijo derecho de 20 en el primer
-paso, y ahí se queda)*
+se queda "flotando" — se reengancha nuevamente siguiendo la regla de menores
+a la izquierda y mayores a la derecha)*
+
 
 #### 11.4 Rotación doble Derecha-Izquierda (caso DI)
 
@@ -774,10 +788,7 @@ graph TD
 
 **Ejemplo — insertando 50, 80, 20, 90, 70, 75 en ese orden:**
 
-$75$ es el que dispara el desbalance: entra como hijo derecho de 70,
-haciendo que 80 (que ya tenía a 70 como hijo izquierdo y a 90 como hijo
-derecho) quede cargado hacia la izquierda — zigzag en espejo del caso
-anterior:
+1. ANTES (Zigzag provocado por la inserción de 75):
 
 ```mermaid
 graph TD
@@ -785,27 +796,42 @@ graph TD
     k1 --- k3(("80 [FE=-1]"))
     k3 --- k4(("70 [FE=+1]"))
     k3 --- k5(("90 [FE=0]"))
+    k4 --- sp1[" "]:::invis
     k4 --- k6(("75 [FE=0]"))
-    k4 ~~~ sp1(( )):::invisible
 
-    classDef invisible fill:none,stroke:none
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 4 stroke:none;
 ```
 
-$FE=+2$ en 50, con su hijo derecho (80) en $FE=-1$ (signo contrario) →
-caso Derecha-Izquierda. **Paso 1** (rotación simple derecha sobre 80):
-70 sube, 80 baja como su hijo derecho, y el hijo derecho que 70 ya tenía
-(**75**) se reubica como el nuevo hijo **izquierdo** de 80. **Paso 2**
-(rotación simple izquierda sobre 50): 70 sube a la raíz del subárbol, 50
-baja como su hijo izquierdo, y 80 (con sus dos hijos ya acomodados)
-queda como hijo derecho:
+2. INTERMEDIO (Rotación derecha sobre 80, el nodo 70 sube alineando la rama derecha):
+
+```mermaid
+graph TD
+    m1(("50 [FE=+2]")) --- m2(("20 [FE=0]"))
+    m1 --- m3(("70 [FE=+1]"))
+    m3 --- sp1[" "]:::invis
+    m3 --- m4(("80 [FE=0]"))
+    m4 --- m5(("75 [FE=0]"))
+    m4 --- m6(("90 [FE=0]"))
+
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 2 stroke:none;
+```
+
+3. DESPUÉS (Rotación izquierda sobre 50, el nodo 70 corona el subárbol balanceado):
+
 
 ```mermaid
 graph TD
     l1(("70 [FE=0]")) --- l2(("50 [FE=-1]"))
     l1 --- l3(("80 [FE=0]"))
     l2 --- l4(("20 [FE=0]"))
+    l2 --- sp1[" "]:::invis
     l3 --- l5(("75 [FE=0]"))
     l3 --- l6(("90 [FE=0]"))
+
+    classDef invis fill:none,stroke:none,color:none
+    linkStyle 3 stroke:none;
 ```
 
 *(igual que en el caso anterior: 75 no se pierde, se reubica como hijo
