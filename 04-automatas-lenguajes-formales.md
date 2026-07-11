@@ -82,9 +82,7 @@ $q_3$.
 ## 3. Conversión NFA → DFA por el método de subconjuntos
 
 **Idea:** un DFA equivalente se construye tratando cada **conjunto** de
-estados posibles del NFA como un solo estado del DFA nuevo (por eso
-también se llama *construcción de subconjuntos* o *powerset
-construction*).
+estados posibles del NFA como un solo estado del DFA nuevo 
 
 ### Problema
 
@@ -117,7 +115,7 @@ graph LR
     style S3 fill:#6fcf7f,stroke:#2f9e46,stroke-width:3px
 ```
 
-*(en verde, los estados finales $S_1$ y $S_3$)*
+*(en verde, los estados finales S_1 y S_3)*
 
 ### Resolución — construcción de subconjuntos completa
 
@@ -160,7 +158,7 @@ graph LR
     style F fill:#6fcf7f,stroke:#2f9e46,stroke-width:3px
 ```
 
-*(en verde, los 4 estados finales; en rojo, el estado trampa $\varnothing$)*
+*(en verde, los 4 estados finales; en rojo, el estado trampa ∅)*
 
 Ya no aparecen conjuntos nuevos (todas las transiciones apuntan a
 estados ya listados), así que la conversión terminó: este DFA de 7
@@ -228,7 +226,7 @@ $q_7$, que es final. **Cadena aceptada.**
 
 ---
 
-## 6. Algoritmo que detecta cadenas del tipo $a^{*}b(ab)^{*}$
+## 6. Algoritmo que detecta cadenas del tipo `a^*b(ab)*`
 
 ```
 Lee tamaño
@@ -287,8 +285,7 @@ graph LR
 | 4 | a | q1 | q2 |
 | 5 | b | q2 | q1 |
 
-Termina en $q_1$ (final) → **cadena aceptada**, coincide con el patrón
-$a^{*}b(ab)^{*}$: dos "aes" sueltas, luego $b$, luego un bloque $ab$.
+Termina en `q₁` (estado final) → **cadena aceptada**, coincide con el patrón `a^*b(ab)^*`: dos `a` iniciales, luego una `b` y, finalmente, un bloque `ab`.
 
 ---
 
@@ -428,16 +425,8 @@ graph LR
     style q1 fill:#6fcf7f,stroke:#2f9e46,stroke-width:3px
 ```
 
-**Lenguaje que acepta:** $L = b^{*}a(ab^{*}a)^{*}$ — cualquier cantidad
-de $b$'s, luego una $a$, y de ahí en adelante bloques de "$a$ seguida de
-cero o más $b$'s y otra $a$", repetidos las veces que sea.
+**Lenguaje que acepta:** `L = b*a(ab*a)*` — cualquier cantidad de `b`, luego una `a`, y de ahí en adelante bloques de "`a` seguida de cero o más `b` y otra `a`", repetidos las veces que sea necesario.
 
-> **Nota sobre el material original:** en el PDF fuente había un segundo
-> ejercicio con las reglas $S\to bB,\ B\to cC,\ B\to cA,\ C\to Bb$
-> resuelto a mano de forma poco legible (símbolos y flechas difíciles de
-> distinguir con certeza). Preferí no adivinar esos trazos para no
-> introducir errores; si tienes una foto más clara de ese ejercicio
-> puedo resolverlo con el mismo nivel de detalle que este.
 
 ---
 
@@ -677,7 +666,7 @@ ambigua.
 ---
 
 ## 14. Operaciones sobre lenguajes
-
+(Falta mejor explicación, consultar la ppt del classroom)
 Dado un DFA $M_1$ que reconoce $L_1$ y otro $M_2$ que reconoce $L_2$, se
 puede construir un DFA para cada operación:
 
