@@ -97,7 +97,7 @@ $$n = i + l$$
 
 **Caso base ($i=0$):** cero nodos internos significa que ningún nodo
 tiene hijos → el árbol es un solo nodo aislado (la raíz). Entonces
-$|V|=1$. Evaluando la fórmula: $|V| = m\cdot(0)+1 = 1$. ✅ Coincide.
+$|V|=1$. Evaluando la fórmula: $|V| = m\cdot(0)+1 = 1$.  Coincide.
 
 **Hipótesis inductiva:** se asume que la fórmula es válida para
 cualquier árbol $m$-ario completo con exactamente $k$ nodos internos:
@@ -157,7 +157,7 @@ $l$ nunca puede superar $m^h$.
 
 **Caso base ($h=0$):** un árbol de altura 0 es un solo nodo (la raíz),
 que automáticamente es una hoja: $l=1$. Evaluando: $m^0=1$. Como
-$1 \le 1$, se cumple. ✅
+$1 \le 1$, se cumple. 
 
 **Hipótesis inductiva:** se asume que para cualquier árbol de altura $k$,
 su cantidad de hojas cumple $l_k \le m^k$.
@@ -249,7 +249,7 @@ misma es $0$ aristas, así que $LCE=0$ manualmente. Evaluando la fórmula:
 
 $$LCE = \sum_{i=0}^{0} ne_i \cdot i = ne_0 \cdot 0 = 1 \cdot 0 = 0$$
 
-Ambos valores coinciden. ✅
+Ambos valores coinciden. 
 
 **Hipótesis inductiva:** para un árbol de altura $k$, se cumple
 $LCE_k = \sum_{i=0}^{k} ne_i \cdot i$.
