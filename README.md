@@ -26,4 +26,4 @@ con explicaciones adicionales.
 - Los bloques de código marcados `pseudocódigo` son algoritmos en pseudocódigo, no un lenguaje real.
 - Para el examen, se desarrollan algoritmos, los códigos hechos en c++, solo son usados para ejemplificar mejor como funciona cada algoritmo desarrollado en clase.
 - Un algoritmo solo se enfoca en la parte lógica a diferencia del código tradicional, por ende, no es necesario usar toda la sintaxis del lenguaje en sí.
-- No está terminado, por lo cual, sugiero complementar con exámenes pasados.
+- No está terminado, por lo cual, sugiero complementar con material de classroom como también de exámenes pasados.
