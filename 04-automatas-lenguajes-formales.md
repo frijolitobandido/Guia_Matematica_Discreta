@@ -1,6 +1,6 @@
 # Autómatas y lenguajes formales — Guía a detalle
 
-INCOMPLETO
+Incompleto tanto en temas como formato.
 
 ---
 
